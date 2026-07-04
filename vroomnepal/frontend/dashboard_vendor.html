@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VroomDepot – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    
+    /* Perfect Side-by-Side Matching Panel Styles */
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #6b6b80;
+    --sidebar-active: #5b2be0;
+    --sidebar-active-bg: #f0ecff;
+    --sidebar-hover-bg: #f5f3ff;
+    --sidebar-border: #e8e8f0;
+    
+    --accent: #5147e8;
+    --accent-light: #ede9ff;
+    --accent-glow: rgba(81,71,232,0.18);
+    --green: #22c55e;
+    --green-light: #dcfce7;
+    --orange: #f97316;
+    --orange-light: #fff7ed;
+    --red: #ef4444;
+    --red-light: #fee2e2;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --card-shadow-hover: 0 4px 20px rgba(0,0,0,0.10);
+    --sidebar-w: 155px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ARCHITECTURE ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 18px 16px 16px;
+    border-bottom: 1px solid #f0f0f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Pulling logo directly from local asset tree path */
+  .sidebar-logo img {
+    max-width: 100%;
+    height: auto;
+    max-height: 40px;
+    display: block;
+    object-fit: contain;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    color: var(--sidebar-text);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { 
+    background: var(--sidebar-hover-bg); 
+    color: var(--sidebar-active); 
+  }
+
+  .nav-item.active {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active);
+    font-weight: 600;
+  }
+
+  .nav-item .nav-icon {
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: currentColor;
+  }
+
+  .nav-item svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--sidebar-active);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 14px 0;
+    border-top: 1px solid #f0f0f5;
+  }
+
+  .nav-item.logout:hover { 
+    background: var(--sidebar-hover-bg); 
+    color: #ef4444; 
+  }
+
+  /* ── VIEWPORT CONTENT LAYOUT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--surface);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--sidebar-border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .notif-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--sidebar-border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .notif-btn:hover { background: var(--bg); }
+
+  .notif-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 6px; right: 6px;
+    border: 1.5px solid #fff;
+  }
+
+  .user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 10px;
+    padding: 5px 12px 5px 5px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .user-pill:hover { border-color: var(--sidebar-active); }
+
+  .user-avatar {
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .user-info { line-height: 1.2; }
+  .user-name { font-size: 12.5px; font-weight: 600; }
+  .user-role { font-size: 10.5px; color: var(--text-secondary); }
+
+  .page-content {
+    padding: 28px 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── METRIC PRESENTATION CARDS ── */
+  .stat-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--sidebar-border);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .stat-card:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-1px); }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  .stat-progress {
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .stat-progress-bar {
+    height: 100%;
+    background: var(--sidebar-active);
+    border-radius: 4px;
+    width: 0;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .fleet-stat-card {
+    background: var(--sidebar-active);
+    border-radius: 12px;
+    padding: 20px 28px;
+    box-shadow: 0 4px 16px rgba(91, 43, 224, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    color: #fff;
+    transition: transform 0.2s;
+  }
+
+  .fleet-stat-card:hover { transform: translateY(-1px); }
+
+  .fleet-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .fleet-number {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+
+  .fleet-label { font-size: 11.5px; opacity: 0.85; font-weight: 500; }
+
+  /* ── CENTER FLEX BLOCKS ── */
+  .middle-row {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--sidebar-border);
+    box-shadow: var(--card-shadow);
+    padding: 24px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .btn-outline {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--sidebar-border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-outline:hover { border-color: var(--sidebar-active); color: var(--sidebar-active); }
+
+  .chart-wrap {
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .chart-canvas-wrap {
+    width: 100%;
+    height: 180px;
+    position: relative;
+  }
+
+  canvas#revenueChart { width: 100% !important; }
+
+  /* ── WORKFLOW REQUEST ITEMS ── */
+  .booking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .booking-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--sidebar-border);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .booking-item:hover { border-color: var(--sidebar-active); background: var(--sidebar-hover-bg); }
+
+  .booking-avatar {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .booking-info { flex: 1; min-width: 0; }
+  .booking-name { font-size: 13px; font-weight: 600; }
+  .booking-car { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .booking-days { font-size: 11px; color: var(--sidebar-active); font-weight: 600; margin-top: 2px; }
+
+  .booking-actions { display: flex; gap: 6px; }
+
+  .action-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .action-btn.accept { background: var(--green-light); color: var(--green); }
+  .action-btn.accept:hover { background: var(--green); color: #fff; }
+  .action-btn.decline { background: var(--red-light); color: var(--red); }
+  .action-btn.decline:hover { background: var(--red); color: #fff; }
+
+  .view-all-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sidebar-active);
+    margin-top: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .view-all-link:hover { gap: 7px; }
+
+  /* ── VEHICLE SPECIFIC DATA DISPLAY GRID ── */
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+  }
+
+  .section-sub { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; }
+
+  .filter-tabs { display: flex; gap: 6px; }
+
+  .filter-tab {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--sidebar-border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+  }
+
+  .filter-tab:hover { border-color: var(--sidebar-active); color: var(--sidebar-active); }
+  .filter-tab.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
+
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .vehicle-card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--sidebar-border);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .vehicle-card:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-2px); }
+
+  .vehicle-img-wrap {
+    position: relative;
+    height: 140px;
+    overflow: hidden;
+    background: #f8f8f8;
+  }
+
+  .vehicle-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .vehicle-card:hover .vehicle-img-wrap img { transform: scale(1.04); }
+
+  .status-badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .status-available { background: var(--green); color: #fff; }
+  .status-rented { background: var(--sidebar-active); color: #fff; }
+  .status-service { background: var(--orange); color: #fff; }
+
+  .vehicle-body { padding: 14px 16px; }
+
+  .vehicle-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .vehicle-price {
+    color: var(--sidebar-active);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .vehicle-price span { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+
+  .vehicle-specs { display: flex; gap: 12px; margin-bottom: 12px; }
+
+  .spec-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }
+
+  .vehicle-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--sidebar-border);
+  }
+
+  .vehicle-rating { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #f59e0b; }
+
+  .vehicle-action-btns { display: flex; gap: 6px; }
+
+  .btn-sm {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--sidebar-active); color: #fff; }
+  .btn-primary:hover { background: #4a21b8; }
+  .btn-secondary { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--sidebar-border); }
+  .btn-secondary:hover { border-color: var(--sidebar-active); color: var(--sidebar-active); background: var(--sidebar-active-bg); }
+
+  /* ── OVERLAY ACTION TRIGGER CONFIG ── */
+  .fab {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 48px; height: 48px;
+    background: var(--sidebar-active);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(91, 43, 224, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 200;
+  }
+  .fab:hover { transform: scale(1.05); }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26, 26, 46, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .modal-card {
+    background: var(--surface);
+    width: 100%; max-width: 460px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    transform: translateY(16px);
+    transition: transform 0.3s;
+  }
+
+  .modal-overlay.show .modal-card { transform: translateY(0); }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+
+  .modal-close {
+    background: var(--bg); border: none;
+    width: 26px; height: 26px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--text-secondary);
+  }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--sidebar-border);
+    font-family: 'Inter', sans-serif; font-size: 13px; outline: none;
+  }
+  .form-group input:focus { border-color: var(--sidebar-active); }
+
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-submit {
+    width: 100%; padding: 12px; background: var(--sidebar-active); color: #fff; border: none;
+    border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px;
+  }
+
+  #toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(40px);
+    background: #1a1a2e; color: #fff; padding: 12px 24px; border-radius: 30px;
+    font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); opacity: 0; pointer-events: none;
+    transition: transform 0.3s, opacity 0.3s; z-index: 2000;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <img src="/image/logo.png" alt="VroomNepal Logo">
+  </div>
+  
+  <div class="sidebar-nav">
+    <a class="nav-item active" href="#dashboard" data-target="dashboard">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+      </div>
+      <span>Dashboard</span>
+    </a>
+
+    <a class="nav-item" href="#vehicles" data-target="vehicles">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+      </div>
+      <span>My Vehicle</span>
+      <span class="nav-badge fleet-count-badge">5</span>
+    </a>
+
+    <a class="nav-item" href="/booking_vendor.html">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </div>
+      <span>Bookings</span>
+    </a>
+
+    <a class="nav-item" href="#addVehicle" data-target="addVehicle">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+      </div>
+      <span>Add Vehicle</span>
+    </a>
+
+    <a class="nav-item" href="#earnings" data-target="earnings">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      </div>
+      <span>Earnings</span>
+    </a>
+
+    <a class="nav-item" href="/document_vendor.html">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+      </div>
+      <span>Documents</span>
+    </a>
+
+    <a class="nav-item" href="#settings" data-target="settings">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </div>
+      <span>Settings</span>
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a class="nav-item logout" href="/login.html">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </div>
+      <span>Logout</span>
+    </a>
+  </div>
+</div>
+
+<div class="main">
+  
+  <div class="topbar">
+    <div class="topbar-title">Dashboard Overview</div>
+    <div class="topbar-right">
+      <button class="notif-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <div class="notif-dot"></div>
+      </button>
+      <div class="user-pill">
+        <div class="user-avatar">VD</div>
+        <div class="user-info">
+          <div class="user-name">VroomDepot</div>
+          <div class="user-role">Vendor Partner</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="dashboard">
+    
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-label">Earnings (Month)</div>
+        <div class="stat-badge">▲ 14.2%</div>
+        <div class="stat-value">Rs. 142,500</div>
+        <div class="stat-sub">vs Rs. 124,800 last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Utilization Rate</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="88"></div></div>
+        <div class="stat-value" style="margin-top:8px;">88%</div>
+        <div class="stat-sub">4 out of 5 vehicles active today</div>
+      </div>
+      <div class="fleet-stat-card">
+        <div class="fleet-icon">🚗</div>
+        <div class="fleet-number">5</div>
+        <div class="fleet-label">Total Fleet</div>
+      </div>
+    </div>
+
+    <div class="middle-row" id="earnings">
+      <div class="card" id="bookings">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Revenue Analytics</div>
+            <div class="card-sub">Weekly earnings distribution performance</div>
+          </div>
+          <button class="btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Export CSV
+          </button>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-canvas-wrap">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Booking Requests</div>
+            <div class="card-sub">Pending vendor approval actions</div>
+          </div>
+        </div>
+        <div class="booking-list">
+          <div class="booking-item">
+            <div class="booking-avatar">RK</div>
+            <div class="booking-info">
+              <div class="booking-name">Rohan Karki</div>
+              <div class="booking-car">Scorpio PickUp (2022)</div>
+              <div class="booking-days">3 Days • Rs. 13,500 total</div>
+            </div>
+            <div class="booking-actions">
+              <button class="action-btn accept" onclick="showToast('Booking Accepted', '✅')">✓</button>
+              <button class="action-btn decline" onclick="showToast('Booking Declined', '❌')">✕</button>
+            </div>
+          </div>
+          <div class="booking-item">
+            <div class="booking-avatar">AS</div>
+            <div class="booking-info">
+              <div class="booking-name">Aayush Shrestha</div>
+              <div class="booking-car">Maruti Suzuki Swift (2021)</div>
+              <div class="booking-days">5 Days • Rs. 12,500 total</div>
+            </div>
+            <div class="booking-actions">
+              <button class="action-btn accept" onclick="showToast('Booking Accepted', '✅')">✓</button>
+              <button class="action-btn decline" onclick="showToast('Booking Declined', '❌')">✕</button>
+            </div>
+          </div>
+        </div>
+        <a class="view-all-link" href="/booking_vendor.html">View All Bookings <span>→</span></a>
+      </div>
+    </div>
+
+    <div id="vehicles">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Fleet Status</div>
+          <div class="section-sub">Real-time status tracking for live operations</div>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterFleet('all', this)">All</button>
+          <button class="filter-tab" onclick="filterFleet('Available', this)">Available</button>
+          <button class="filter-tab" onclick="filterFleet('Rented', this)">Rented</button>
+          <button class="filter-tab" onclick="filterFleet('In Service', this)">In Service</button>
+        </div>
+      </div>
+
+      <div class="fleet-grid" id="fleetGrid">
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">Quick Fleet Onboarding</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    
+    <div class="form-group">
+      <label>Vehicle Make</label>
+      <input type="text" id="f-make" placeholder="e.g. Mahindra, Toyota">
+    </div>
+    <div class="form-group">
+      <label>Model Variant</label>
+      <input type="text" id="f-model" placeholder="e.g. Scorpio, Swift, Vitara Brezza">
+    </div>
+    
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Model Year</label>
+        <input type="number" id="f-year" placeholder="2023">
+      </div>
+      <div class="form-group">
+        <label>Daily Rental Rate (Rs.)</label>
+        <input type="number" id="f-rate" placeholder="4500">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Fuel Economy (MPG)</label>
+        <input type="number" id="f-mpg" placeholder="32">
+      </div>
+      <div class="form-group">
+        <label>Operational Status</label>
+        <select id="f-status">
+          <option value="Available">Available</option>
+          <option value="Rented">Rented</option>
+          <option value="In Service">In Service</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Showcase Image Link</label>
+      <input type="text" id="f-img" placeholder="https://images.unsplash.com/...">
+    </div>
+
+    <button class="modal-submit" onclick="addNewVehicle()">Register Vehicle</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const API_BASE = '/api';
+let vehicles = [];
+let bookings = [];
+let activeFilter = 'all';
+let revenueChart = null;
+let toastTimer;
+const fallbackImage = '/dashboard/OIP.jpg';
+
+function getToken() { return localStorage.getItem('token'); }
+function getUser() { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; } }
+
+function requireVendorSession() {
+  const user = getUser();
+  if (!getToken() || !['vendor', 'admin'].includes(user && user.role)) {
+    window.location.href = '/login.html?role=vendor';
+    return false;
+  }
+  return true;
+}
+
+async function apiFetch(path, options = {}) {
+  const headers = Object.assign({}, options.headers || {}, { Authorization: 'Bearer ' + getToken() });
+  if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+  const response = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+  const data = await response.json().catch(function () { return {}; });
+  if (!response.ok || data.success === false) throw new Error(data.message || 'Request failed');
+  return data;
+}
+
+function money(value) { return 'Rs. ' + Number(value || 0).toLocaleString('en-IN'); }
+function initials(name) {
+  return String(name || 'VD').split(/\s+/).filter(Boolean).map(function (part) { return part[0]; }).join('').slice(0, 2).toUpperCase() || 'VD';
+}
+
+function hydrateUser() {
+  const user = getUser();
+  if (!user) return;
+  document.querySelectorAll('.user-name').forEach(function (el) { el.textContent = user.name || 'Vendor'; });
+  document.querySelectorAll('.user-avatar').forEach(function (el) { el.textContent = initials(user.name || 'Vendor'); });
+}
+
+function normalizeVehicle(car) {
+  const status = (car.availability === true || car.availability === 1 || car.availability === '1') ? 'Available' : 'Rented';
+  return {
+    id: car.id,
+    make: car.brand || 'Vehicle',
+    model: car.model || car.name || 'Listing',
+    name: car.name || ((car.brand || '') + ' ' + (car.model || '')).trim() || 'Vehicle',
+    year: car.year || '',
+    rate: Number(car.price_per_day || 0),
+    status: status,
+    rating: '5.0',
+    trips: bookings.filter(function (booking) { return Number(booking.car_id) === Number(car.id); }).length,
+    img: car.image || fallbackImage
+  };
+}
+
+async function loadFleet() {
+  try {
+    const user = getUser();
+    const query = user && user.role === 'vendor' ? '?vendor_id=' + encodeURIComponent(user.id) : '';
+    const data = await apiFetch('/cars' + query, { headers: {} });
+    vehicles = (data.cars || []).map(normalizeVehicle);
+  } catch (error) {
+    vehicles = [];
+    showToast(error.message || 'Could not load vehicles');
+  }
+  updateFleetStats();
+  renderFleet(activeFilter);
+}
+
+function updateFleetStats() {
+  const total = vehicles.length;
+  const active = vehicles.filter(function (v) { return v.status === 'Available' || v.status === 'Rented'; }).length;
+  const utilization = total ? Math.round((active / total) * 100) : 0;
+  document.querySelectorAll('.fleet-number, .fleet-count-badge').forEach(function (el) { el.textContent = total; });
+  const utilizationValue = document.querySelector('.stat-cards .stat-card:nth-child(2) .stat-value');
+  const utilizationSub = document.querySelector('.stat-cards .stat-card:nth-child(2) .stat-sub');
+  const progress = document.querySelector('.stat-progress-bar');
+  if (utilizationValue) utilizationValue.textContent = utilization + '%';
+  if (utilizationSub) utilizationSub.textContent = active + ' out of ' + total + ' vehicles active today';
+  if (progress) { progress.dataset.width = utilization; progress.style.width = utilization + '%'; }
+}
+
+function renderFleet(filter) {
+  const container = document.getElementById('fleetGrid');
+  if (!container) return;
+  const filtered = filter === 'all' ? vehicles : vehicles.filter(function (v) { return v.status === filter; });
+  container.innerHTML = '';
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="grid-column: span 3; text-align:center; padding: 40px; color: var(--text-secondary); font-size:14px;">No vehicles found for this status.</div>';
+    return;
+  }
+  filtered.forEach(function (v) {
+    const badgeClass = v.status === 'Rented' ? 'status-rented' : v.status === 'In Service' ? 'status-service' : 'status-available';
+    const card = document.createElement('div');
+    card.className = 'vehicle-card';
+    card.innerHTML = '<div class="vehicle-img-wrap"><img src="' + v.img + '" alt="' + v.name + '"><span class="status-badge ' + badgeClass + '">' + v.status + '</span></div>' +
+      '<div class="vehicle-body"><div class="vehicle-name">' + v.name + '<div class="vehicle-price">' + money(v.rate) + '<span>/day</span></div></div>' +
+      '<div class="vehicle-specs"><div class="spec-item"><span>' + (v.year || 'Year n/a') + '</span></div><div class="spec-item"><span>' + v.make + '</span></div><div class="spec-item"><span>' + v.trips + ' trips</span></div></div>' +
+      '<div class="vehicle-footer"><div class="vehicle-rating">Star <span>' + v.rating + '</span></div><div class="vehicle-action-btns"><button class="btn-sm btn-secondary" type="button" data-vehicle-logs="' + v.id + '">Logs</button><button class="btn-sm btn-primary" type="button" data-vehicle-toggle="' + v.id + '">' + (v.status === 'Available' ? 'Mark Rented' : 'Mark Available') + '</button></div></div></div>';
+    container.appendChild(card);
+  });
+}
+
+function filterFleet(status, el) {
+  activeFilter = status;
+  document.querySelectorAll('.filter-tab').forEach(function (t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  renderFleet(status);
+}
+
+async function loadBookings() {
+  try {
+    const data = await apiFetch('/bookings');
+    bookings = data.bookings || [];
+  } catch (error) {
+    bookings = [];
+  }
+  renderBookings();
+  renderEarnings();
+  loadNotifications();
+}
+
+async function loadNotifications() {
+  try {
+    const data = await apiFetch('/notifications');
+    const dot = document.querySelector('.notif-dot');
+    if (dot) dot.style.display = Number(data.unread || 0) > 0 ? 'block' : 'none';
+  } catch (error) {
+  }
+}
+
+function renderBookings() {
+  const list = document.querySelector('.booking-list');
+  if (!list) return;
+  const pending = bookings.filter(function (booking) { return String(booking.status || '').toLowerCase() === 'pending'; });
+  if (pending.length === 0) {
+    list.innerHTML = '<div class="booking-item"><div class="booking-avatar">VN</div><div class="booking-info"><div class="booking-name">No pending requests</div><div class="booking-car">New customer bookings will appear here.</div><div class="booking-days">Connected to backend</div></div></div>';
+    return;
+  }
+  list.innerHTML = pending.slice(0, 6).map(function (booking) {
+    return '<div class="booking-item"><div class="booking-avatar">' + initials(booking.user_name || 'Customer') + '</div><div class="booking-info"><div class="booking-name">' + (booking.user_name || 'Customer') + '</div><div class="booking-car">' + (booking.car_name || 'Vehicle booking') + '</div><div class="booking-days">' + String(booking.start_date || '').slice(0, 10) + ' to ' + String(booking.end_date || '').slice(0, 10) + ' - ' + money(booking.total_price) + '</div></div><div class="booking-actions"><button class="action-btn accept" type="button" data-booking-status="' + booking.id + ':confirmed">OK</button><button class="action-btn decline" type="button" data-booking-status="' + booking.id + ':cancelled">X</button></div></div>';
+  }).join('');
+}
+
+function renderEarnings() {
+  const totalRevenue = bookings.filter(function (booking) { return !['cancelled', 'failed'].includes(String(booking.status || '').toLowerCase()); }).reduce(function (sum, booking) { return sum + Number(booking.total_price || 0); }, 0);
+  const active = bookings.filter(function (booking) { return ['pending', 'confirmed'].includes(String(booking.status || '').toLowerCase()); }).length;
+  const earnings = document.querySelector('.stat-cards .stat-card:nth-child(1) .stat-value');
+  const earningsSub = document.querySelector('.stat-cards .stat-card:nth-child(1) .stat-sub');
+  const badge = document.querySelector('.stat-badge');
+  if (earnings) earnings.textContent = money(totalRevenue);
+  if (earningsSub) earningsSub.textContent = active + ' active booking requests';
+  if (badge) badge.textContent = bookings.length + ' total bookings';
+  updateChartFromBookings();
+}
+
+async function updateBookingStatus(id, status) {
+  await apiFetch('/bookings/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status: status }) });
+  showToast(status === 'confirmed' ? 'Booking accepted' : 'Booking declined');
+  await loadBookings();
+  await loadFleet();
+}
+
+async function toggleVehicleAvailability(id) {
+  const vehicle = vehicles.find(function (v) { return Number(v.id) === Number(id); });
+  if (!vehicle) return;
+  const nextAvailable = vehicle.status !== 'Available';
+  await apiFetch('/cars/' + id, { method: 'PUT', body: JSON.stringify({ availability: nextAvailable }) });
+  showToast(nextAvailable ? 'Vehicle marked available' : 'Vehicle marked rented');
+  await loadFleet();
+}
+
+function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+function closeModalOutside(e) { if (e.target.id === 'modalOverlay') closeModal(); }
+
+async function addNewVehicle() {
+  const make = document.getElementById('f-make').value.trim();
+  const model = document.getElementById('f-model').value.trim();
+  const year = document.getElementById('f-year').value;
+  const rate = document.getElementById('f-rate').value;
+  const status = document.getElementById('f-status').value;
+  const img = document.getElementById('f-img').value.trim();
+  if (!make || !model || !year || !rate) { showToast('Please fill out all primary fields'); return; }
+  if (Number(rate) < 1000) { showToast('Daily rate must be at least Rs. 1,000'); return; }
+  try {
+    await apiFetch('/cars', { method: 'POST', body: JSON.stringify({ name: make + ' ' + model, brand: make, model: model, year: Number(year), price_per_day: Number(rate), availability: status === 'Available', image: img || fallbackImage }) });
+    closeModal();
+    ['f-make', 'f-model', 'f-year', 'f-rate', 'f-mpg', 'f-img'].forEach(function (id) { document.getElementById(id).value = ''; });
+    showToast(make + ' ' + model + ' added to fleet');
+    await loadFleet();
+  } catch (error) {
+    showToast(error.message || 'Vehicle could not be added');
+  }
+}
+
+function initChart() {
+  const canvas = document.getElementById('revenueChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  revenueChart = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: { labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], datasets: [{ label: 'Weekly Revenue (Rs.)', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(91, 43, 224, 0.45)', hoverBackgroundColor: '#5b2be0', borderRadius: 6, borderSkipped: false, barPercentage: 0.55 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } }, y: { grid: { color: '#eaeaea' }, ticks: { font: { family: 'Inter', size: 11 } } } } }
+  });
+}
+
+function updateChartFromBookings() {
+  if (!revenueChart) return;
+  const totals = [0, 0, 0, 0, 0, 0, 0];
+  bookings.forEach(function (booking) { const date = new Date(booking.created_at || booking.start_date || Date.now()); totals[date.getDay()] += Number(booking.total_price || 0); });
+  revenueChart.data.datasets[0].data = totals;
+  revenueChart.update();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<span>' + msg + '</span>';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2800);
+}
+
+function animateProgress() {
+  document.querySelectorAll('.stat-progress-bar').forEach(function (bar) {
+    const w = bar.dataset.width || 0;
+    requestAnimationFrame(function () { setTimeout(function () { bar.style.width = w + '%'; }, 200); });
+  });
+}
+
+function bindNavigation() {
+  document.querySelectorAll('.nav-item').forEach(function (item) {
+    item.addEventListener('click', function (event) {
+      const target = item.dataset.target;
+      if (!target) return;
+      event.preventDefault();
+      document.querySelectorAll('.nav-item').forEach(function (nav) { nav.classList.remove('active'); });
+      item.classList.add('active');
+      if (target === 'addVehicle') { window.location.href = '/addvehicle_vendor.html'; return; }
+      if (target === 'settings') { showToast('Settings are connected to your vendor account.'); return; }
+      const section = document.getElementById(target);
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+function bindActions() {
+  document.addEventListener('click', async function (event) {
+    const logout = event.target.closest('.logout');
+    if (logout) {
+      event.preventDefault();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html?role=vendor';
+      return;
+    }
+    const bookingButton = event.target.closest('[data-booking-status]');
+    if (bookingButton) {
+      const parts = bookingButton.dataset.bookingStatus.split(':');
+      try { await updateBookingStatus(parts[0], parts[1]); } catch (error) { showToast(error.message || 'Could not update booking'); }
+      return;
+    }
+    const vehicleToggle = event.target.closest('[data-vehicle-toggle]');
+    if (vehicleToggle) {
+      try { await toggleVehicleAvailability(vehicleToggle.dataset.vehicleToggle); } catch (error) { showToast(error.message || 'Could not update vehicle'); }
+      return;
+    }
+    const logs = event.target.closest('[data-vehicle-logs]');
+    if (logs) showToast('Vehicle logs are ready from backend fleet data.');
+    const notification = event.target.closest('.notif-btn');
+    if (notification) {
+      try {
+        const data = await apiFetch('/notifications');
+        const latest = (data.notifications || [])[0];
+        showToast(latest ? latest.message : 'No new notifications');
+        await apiFetch('/notifications/read', { method: 'PATCH' });
+        loadNotifications();
+      } catch (error) {
+        showToast('Could not load notifications');
+      }
+    }
+  });
+}
+
+window.addEventListener('DOMContentLoaded', async function () {
+  if (!requireVendorSession()) return;
+  hydrateUser();
+  bindNavigation();
+  bindActions();
+  initChart();
+  animateProgress();
+  await loadBookings();
+  await loadFleet();
+});
+</script>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VroomNepal - Login</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f0f8;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 36px 30px 30px;
+      border-radius: 20px;
+      width: 340px;
+      box-shadow: 0 8px 32px rgba(80, 80, 180, 0.10),
+                  0 1.5px 6px rgba(0,0,0,0.07);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 26px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #5b5fc7;
+    }
+
+    .field {
+      width: 100%;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .field label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #333348;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 0 0 1.5px #e2e2ec,
+                  0 2px 8px rgba(91, 95, 199, 0.10);
+      background: #fafafa;
+      transition: box-shadow 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      box-shadow: 0 0 0 2px #5b5fc7,
+                  0 2px 12px rgba(91, 95, 199, 0.18);
+      background: #fff;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      width: 15px;
+      height: 15px;
+      stroke: #aaaabc;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 11px 36px 11px 36px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: #1a1a2e;
+      outline: none;
+    }
+
+    .field input::placeholder {
+      color: #c8c8d8;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 11px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .eye-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: #aaaabc;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .forgot {
+      width: 100%;
+      text-align: right;
+      margin-bottom: 18px;
+      margin-top: -4px;
+    }
+
+    .forgot a {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #5b5fc7;
+      text-decoration: none;
+    }
+
+    .forgot a:hover {
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #5b5fc7;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+      box-shadow: 0 4px 14px rgba(91, 95, 199, 0.30);
+    }
+
+    .btn:hover {
+      background: #4a4eb6;
+    }
+
+    .btn-google {
+      width: 100%;
+      padding: 11px;
+      border: none;
+      border-radius: 10px;
+      background: #f8f8fc;
+      color: #444460;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+      box-shadow: 0 0 0 1.5px #e2e2ec,
+                  0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+
+    .btn-google:hover {
+      background: #ededf8;
+    }
+
+    .btn-google svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .signup {
+      font-size: 12px;
+      color: #888899;
+      text-align: center;
+    }
+
+    .signup a {
+      color: #5b5fc7;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 3px;
+    }
+
+    .signup a:hover {
+      text-decoration: underline;
+    }
+
+    .extra-links {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 11.5px;
+      color: #999aaa;
+      line-height: 1.9;
+    }
+
+    .extra-links a {
+      color: #5b5fc7;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .extra-links a:hover {
+      text-decoration: underline;
+    }
+
+    .separator {
+      margin: 0 8px;
+      color: #c0c0d4;
+    }
+
+    .input-wrap.error {
+      box-shadow: 0 0 0 2px #e74c3c,
+                  0 2px 8px rgba(231,76,60,0.12);
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: #e74c3c;
+      margin-top: 4px;
+      min-height: 15px;
+      display: block;
+    }
+
+    .role-note {
+      width: 100%;
+      margin: -10px 0 16px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      background: #f7f7ff;
+      color: #4b4fba;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px #e3e4ff;
+    }
+
+    .api-message {
+      width: 100%;
+      min-height: 18px;
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .api-message.error { color: #e74c3c; }
+    .api-message.success { color: #1f9d55; }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <svg width="54" height="54" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="28" r="28" fill="#eeeeff"/>
+      <polyline points="10,18 19,38 28,22"
+                fill="none"
+                stroke="#5b5fc7"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+
+      <polyline points="28,22 37,38 46,18"
+                fill="none"
+                stroke="#5b5fc7"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+
+      <line x1="14"
+            y1="41"
+            x2="42"
+            y2="41"
+            stroke="#5b5fc7"
+            stroke-width="2.5"
+            stroke-linecap="round"/>
+    </svg>
+
+    <span class="logo-text">VroomNepal</span>
+  </div>
+
+  <div class="role-note" id="roleNote">Customer Login</div>
+  <div class="api-message" id="apiMessage"></div>
+
+  <!-- Email -->
+  <div class="field">
+    <label>Email</label>
+
+    <div class="input-wrap">
+      <input id="identifier" type="email" placeholder="johndoe@gmail.com" autocomplete="email">
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="field">
+    <label>Password</label>
+
+    <div class="input-wrap">
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    </div>
+  </div>
+
+  <!-- Forgot -->
+  <div class="forgot">
+    <a href="forgotPassword.html">
+      Forgot password?
+    </a>
+  </div>
+
+  <!-- Login Button -->
+  <button class="btn" id="loginBtn" type="button" data-vroom-skip-route="true">
+    Login
+  </button>
+
+  <!-- Google -->
+  <button class="btn-google">
+    Continue with Google
+  </button>
+
+  <!-- Signup -->
+  <div class="signup">
+    Don't have an account?
+    <a href="signup.html">Sign Up</a>
+  </div>
+
+  <!-- Added Admin + Vendor Login -->
+  <div class="extra-links">
+    <a href="login.html?role=user">
+      Login as Customer
+    </a>
+
+    <span class="separator">|</span>
+
+    <a href="login.html?role=admin">
+      Login as Admin
+    </a>
+
+    <span class="separator">|</span>
+
+    <a href="login.html?role=vendor">
+      Login as Vendor
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+  const API_BASE = '/api';
+  const roleLabels = {
+    user: 'Customer Login',
+    vendor: 'Vendor Login',
+    admin: 'Admin Login',
+  };
+  const roleRedirects = {
+    user: '/dashboard_customer.html',
+    vendor: '/dashboard_vendor.html',
+    admin: '/dashboard/index.html',
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedRole = ['user', 'vendor', 'admin'].includes(params.get('role')) ? params.get('role') : 'user';
+  const roleNote = document.getElementById('roleNote');
+  const apiMessage = document.getElementById('apiMessage');
+  const loginBtn = document.getElementById('loginBtn');
+  const identifierInput = document.getElementById('identifier');
+  const passwordInput = document.getElementById('password');
+
+  roleNote.textContent = roleLabels[requestedRole];
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  function showMessage(message, type = 'error') {
+    apiMessage.textContent = message;
+    apiMessage.className = `api-message ${type}`;
+  }
+
+  function setLoading(isLoading) {
+    loginBtn.disabled = isLoading;
+    loginBtn.textContent = isLoading ? 'Logging in...' : 'Login';
+  }
+
+  async function handleLogin() {
+    const identifier = identifierInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!identifier || !password) {
+      showMessage('Email and password are required.');
+      return;
+    }
+
+    setLoading(true);
+    showMessage('');
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier, password, role: requestedRole }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        showMessage(data.message || 'Login failed. Please try again.');
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showMessage('Login successful! Redirecting...', 'success');
+
+      const savedRedirect = requestedRole === 'user' ? localStorage.getItem('postLoginRedirect') : null;
+      const redirect = requestedRole === 'user'
+        ? (savedRedirect || roleRedirects.user)
+        : roleRedirects[requestedRole];
+      localStorage.removeItem('postLoginRedirect');
+      setTimeout(() => {
+        window.location.href = redirect;
+      }, 500);
+    } catch (error) {
+      showMessage('Unable to connect to the server.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  loginBtn.addEventListener('click', handleLogin);
+  [identifierInput, passwordInput].forEach(input => {
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter') handleLogin();
+    });
+  });
+</script>
+
+<script src="/app.js?v=auth-route-fix"></script>
+</body>
+</html>

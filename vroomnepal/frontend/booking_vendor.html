@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bookings Management</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #f5f6fa; color: #1a1a2e; display: flex; min-height: 100vh; }
+  .sidebar { width: 200px; min-width: 200px; background: #fff; display: flex; flex-direction: column; border-right: 1px solid #eee; padding: 18px 0; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 8px; padding: 0 18px 22px 18px; border-bottom: 1px solid #f0f0f0; }
+  .logo-icon { width: 32px; height: 32px; background: #6c63ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+  .logo-text { font-size: 13px; font-weight: 700; color: #1a1a2e; line-height: 1.2; }
+  .logo-text span { display: block; font-size: 10px; font-weight: 400; color: #aaa; }
+  .nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .nav a, .sidebar-bottom a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #666; text-decoration: none; transition: background .15s, color .15s; }
+  .nav a:hover, .sidebar-bottom a:hover { background: #f4f3ff; color: #6c63ff; }
+  .nav a.active { background: #6c63ff; color: #fff; }
+  .nav a svg, .sidebar-bottom a svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sidebar-bottom { padding: 10px; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 2px; }
+  .main { margin-left: 200px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: #fff; border-bottom: 1px solid #eee; padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; position: sticky; top: 0; z-index: 50; }
+  .search-wrap { display: flex; align-items: center; gap: 8px; background: #f5f6fa; border-radius: 8px; padding: 8px 14px; width: min(320px, 100%); }
+  .search-wrap svg { width: 15px; height: 15px; fill: none; stroke: #bbb; stroke-width: 2; }
+  .search-wrap input { border: none; background: transparent; outline: none; font-size: 12.5px; color: #555; width: 100%; }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { width: 34px; height: 34px; border-radius: 50%; background: #f5f6fa; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
+  .notif-btn svg { width: 16px; height: 16px; fill: none; stroke: #888; stroke-width: 2; }
+  .notif-dot { width: 7px; height: 7px; background: #ff4757; border-radius: 50%; position: absolute; top: 5px; right: 5px; border: 1.5px solid #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; cursor: default; }
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #6c63ff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+  .user-info { line-height: 1.3; }
+  .user-info .name { font-size: 12.5px; font-weight: 600; color: #1a1a2e; }
+  .user-info .role { font-size: 10.5px; color: #aaa; }
+  .content { padding: 28px; flex: 1; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .page-title { font-size: 22px; font-weight: 700; color: #1a1a2e; }
+  .page-sub { font-size: 12.5px; color: #888; margin-top: 3px; max-width: 440px; line-height: 1.5; }
+  .btn-add { width: 36px; height: 36px; border-radius: 50%; background: #6c63ff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+  .btn-add svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: #fff; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .stat-card.highlight { background: #6c63ff; }
+  .stat-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon.blue { background: #e8f4ff; color: #3a86ff; }
+  .stat-icon.green { background: #e8fff3; color: #27ae60; }
+  .stat-icon.purple { background: rgba(255,255,255,.2); color: #fff; }
+  .stat-icon.yellow { background: #fffbe8; color: #f5a623; }
+  .stat-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .stat-info .label { font-size: 11px; color: #aaa; font-weight: 500; margin-bottom: 4px; }
+  .stat-card.highlight .stat-info .label { color: rgba(255,255,255,.75); }
+  .stat-info .value { font-size: 22px; font-weight: 700; color: #1a1a2e; line-height: 1.1; }
+  .stat-card.highlight .stat-info .value { color: #fff; font-size: 18px; }
+  .tabs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .tabs { display: flex; gap: 2px; background: #f0f0f5; border-radius: 8px; padding: 3px; flex-wrap: wrap; }
+  .tab { padding: 6px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 500; cursor: pointer; color: #777; border: none; background: transparent; transition: background .15s, color .15s; }
+  .tab.active { background: #fff; color: #1a1a2e; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .tab-actions { display: flex; gap: 8px; }
+  .btn-sm { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 500; cursor: pointer; border: 1px solid #e5e5e5; background: #fff; color: #555; transition: background .15s; }
+  .btn-sm:hover { background: #f5f6fa; }
+  .btn-sm svg { width: 14px; height: 14px; fill: none; stroke: #888; stroke-width: 2; }
+  .table-wrap { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.05); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid #f0f0f0; }
+  thead th { font-size: 11px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: .5px; padding: 13px 16px; text-align: left; }
+  tbody tr { border-bottom: 1px solid #f9f9f9; transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+  tbody td { padding: 12px 16px; font-size: 13px; color: #333; vertical-align: middle; }
+  .customer-cell { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .cust-name, .vehicle-name { font-size: 12.5px; font-weight: 600; color: #1a1a2e; line-height: 1.2; }
+  .cust-id, .schedule-text { font-size: 11px; color: #888; line-height: 1.5; }
+  .amount { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
+  .badge.pending { background: #fff4e5; color: #f5a623; }
+  .badge.confirmed { background: #e8fff3; color: #27ae60; }
+  .badge.completed { background: #f0f0f5; color: #888; }
+  .badge.cancelled { background: #ffe8e8; color: #e74c3c; }
+  .action-cell { display: flex; gap: 6px; flex-wrap: wrap; }
+  .row-btn { border: none; border-radius: 6px; padding: 6px 9px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+  .row-btn.approve { background: #e8fff3; color: #1f9d55; }
+  .row-btn.cancel { background: #ffe8e8; color: #d63031; }
+  .row-btn.complete { background: #f0f0f5; color: #555; }
+  .row-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-top: 1px solid #f0f0f0; }
+  .showing-text { font-size: 12px; color: #888; }
+  .status-message { padding: 28px; text-align: center; color: #888; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: #fff; border-radius: 999px; padding: 11px 18px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 3000; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 980px) {
+    .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tabs-row { align-items: flex-start; flex-direction: column; }
+    .table-wrap { overflow-x: auto; }
+    table { min-width: 760px; }
+  }
+  @media (max-width: 720px) {
+    .sidebar { position: static; width: 100%; height: auto; min-width: 0; }
+    body { display: block; }
+    .main { margin-left: 0; }
+    .stat-row { grid-template-columns: 1fr; }
+    .topbar { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></div>
+    <div class="logo-text">VroomVault<span>Premium Fleet</span></div>
+  </div>
+  <nav class="nav">
+    <a href="/dashboard_vendor.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+    <a href="/dashboard_vendor.html#vehicles"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>My Vehicles</a>
+    <a href="/addvehicle_vendor.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Add Vehicle</a>
+    <a href="/booking_vendor.html" class="active"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Bookings</a>
+    <a href="/dashboard_vendor.html#earnings"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Earnings</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="/dashboard_vendor.html#settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.3l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>Settings</a>
+    <a href="/login.html?role=vendor" id="logoutLink"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+  </div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" type="text" placeholder="Search bookings..."/>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn" type="button"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot"></span></button>
+      <div class="user-chip"><div class="user-avatar" id="userAvatar">VD</div><div class="user-info"><div class="name" id="userName">Vendor</div><div class="role">Vendor</div></div></div>
+    </div>
+  </header>
+  <main class="content">
+    <div class="page-header">
+      <div><div class="page-title">Bookings Management</div><div class="page-sub">Monitor your fleet activity, approve incoming requests, cancel unavailable rentals, and mark completed journeys.</div></div>
+      <button class="btn-add" id="refreshBtn" type="button" title="Refresh bookings"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></button>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div><div class="stat-info"><div class="label">Pending Approvals</div><div class="value" id="pendingCount">0</div></div></div>
+      <div class="stat-card"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="stat-info"><div class="label">Approved Today</div><div class="value" id="approvedToday">0</div></div></div>
+      <div class="stat-card highlight"><div class="stat-icon purple"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="stat-info"><div class="label">Estimated Earnings</div><div class="value" id="earningTotal">Rs. 0</div></div></div>
+      <div class="stat-card"><div class="stat-icon yellow"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="stat-info"><div class="label">Total Bookings</div><div class="value" id="totalCount">0</div></div></div>
+    </div>
+    <div class="tabs-row">
+      <div class="tabs">
+        <button class="tab active" type="button" data-status="all">All Bookings</button>
+        <button class="tab" type="button" data-status="pending">Pending</button>
+        <button class="tab" type="button" data-status="confirmed">Approved</button>
+        <button class="tab" type="button" data-status="completed">Completed</button>
+        <button class="tab" type="button" data-status="cancelled">Cancelled</button>
+      </div>
+      <div class="tab-actions">
+        <button class="btn-sm" id="todayBtn" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Today</button>
+        <button class="btn-sm" id="exportBtn" type="button"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer</th><th>Vehicle</th><th>Schedule</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="bookingsBody"><tr><td colspan="6" class="status-message">Loading bookings...</td></tr></tbody>
+      </table>
+      <div class="pagination-row"><span class="showing-text" id="showingText">Showing 0 bookings</span></div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE = '/api';
+const state = { bookings: [], filter: 'all', search: '', todayOnly: false, loading: false };
+const statusText = { pending: 'Pending', confirmed: 'Approved', completed: 'Completed', cancelled: 'Cancelled' };
+
+function getToken() { return localStorage.getItem('token'); }
+function getUser() { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch (error) { return null; } }
+function initials(name) { return String(name || 'Vendor').split(/\s+/).filter(Boolean).map(part => part[0]).join('').slice(0, 2).toUpperCase() || 'VD'; }
+function money(value) { return 'Rs. ' + Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 }); }
+function dateOnly(value) { return value ? String(value).slice(0, 10) : ''; }
+function todayString() { return new Date().toISOString().slice(0, 10); }
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+function requireVendorSession() {
+  const user = getUser();
+  if (!getToken() || !['vendor', 'admin'].includes(user && user.role)) {
+    window.location.href = '/login.html?role=vendor';
+    return false;
+  }
+  document.getElementById('userName').textContent = user.name || 'Vendor';
+  document.getElementById('userAvatar').textContent = initials(user.name || 'Vendor');
+  return true;
+}
+
+async function apiFetch(path, options = {}) {
+  const headers = Object.assign({}, options.headers || {}, { Authorization: 'Bearer ' + getToken() });
+  if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+  const response = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.success === false) throw new Error(data.message || 'Request failed');
+  return data;
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function filteredBookings() {
+  const query = state.search.toLowerCase();
+  const today = todayString();
+  return state.bookings.filter(booking => {
+    const status = String(booking.status || 'pending').toLowerCase();
+    if (state.filter !== 'all' && status !== state.filter) return false;
+    if (state.todayOnly && dateOnly(booking.start_date) !== today && dateOnly(booking.created_at) !== today) return false;
+    if (!query) return true;
+    return [booking.user_name, booking.email, booking.car_name, booking.brand, booking.model, booking.status]
+      .some(value => String(value || '').toLowerCase().includes(query));
+  });
+}
+
+function renderStats() {
+  const bookings = state.bookings;
+  const today = todayString();
+  const pending = bookings.filter(booking => String(booking.status).toLowerCase() === 'pending').length;
+  const approvedToday = bookings.filter(booking => String(booking.status).toLowerCase() === 'confirmed' && dateOnly(booking.created_at) === today).length;
+  const total = bookings.length;
+  const earnings = bookings
+    .filter(booking => !['cancelled'].includes(String(booking.status || '').toLowerCase()))
+    .reduce((sum, booking) => sum + Number(booking.total_price || 0), 0);
+  document.getElementById('pendingCount').textContent = String(pending).padStart(2, '0');
+  document.getElementById('approvedToday').textContent = String(approvedToday).padStart(2, '0');
+  document.getElementById('earningTotal').textContent = money(earnings);
+  document.getElementById('totalCount').textContent = String(total).padStart(2, '0');
+}
+
+function renderBookings() {
+  renderStats();
+  const tbody = document.getElementById('bookingsBody');
+  const visible = filteredBookings();
+  document.getElementById('showingText').textContent = 'Showing ' + visible.length + ' of ' + state.bookings.length + ' bookings';
+  if (state.loading) {
+    tbody.innerHTML = '<tr><td colspan="6" class="status-message">Loading bookings...</td></tr>';
+    return;
+  }
+  if (visible.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="status-message">No bookings found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = visible.map(booking => {
+    const status = String(booking.status || 'pending').toLowerCase();
+    const customer = booking.user_name || booking.email || 'Customer';
+    const vehicle = booking.car_name || [booking.brand, booking.model].filter(Boolean).join(' ') || 'Vehicle';
+    const canApprove = status === 'pending';
+    const canComplete = status === 'confirmed';
+    const canCancel = !['cancelled', 'completed'].includes(status);
+    return '<tr>' +
+      '<td><div class="customer-cell"><div class="avatar" style="background:#6c63ff">' + escapeHtml(initials(customer)) + '</div><div><div class="cust-name">' + escapeHtml(customer) + '</div><div class="cust-id">' + escapeHtml(booking.email || ('Booking #' + booking.id)) + '</div></div></div></td>' +
+      '<td><div class="vehicle-name">' + escapeHtml(vehicle) + '</div></td>' +
+      '<td><div class="schedule-text">' + escapeHtml(dateOnly(booking.start_date) || 'N/A') + ' to ' + escapeHtml(dateOnly(booking.end_date) || 'N/A') + '</div></td>' +
+      '<td><div class="amount">' + escapeHtml(money(booking.total_price)) + '</div></td>' +
+      '<td><span class="badge ' + escapeHtml(status) + '">' + escapeHtml(statusText[status] || status) + '</span></td>' +
+      '<td><div class="action-cell">' +
+        '<button class="row-btn approve" type="button" data-status-action="' + booking.id + ':confirmed" ' + (canApprove ? '' : 'disabled') + '>Approve</button>' +
+        '<button class="row-btn complete" type="button" data-status-action="' + booking.id + ':completed" ' + (canComplete ? '' : 'disabled') + '>Complete</button>' +
+        '<button class="row-btn cancel" type="button" data-status-action="' + booking.id + ':cancelled" ' + (canCancel ? '' : 'disabled') + '>Cancel</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+async function loadBookings() {
+  state.loading = true;
+  renderBookings();
+  try {
+    const data = await apiFetch('/bookings');
+    state.bookings = data.bookings || [];
+  } catch (error) {
+    state.bookings = [];
+    showToast(error.message || 'Could not load bookings');
+  } finally {
+    state.loading = false;
+    renderBookings();
+    loadNotifications();
+  }
+}
+
+async function loadNotifications() {
+  try {
+    const data = await apiFetch('/notifications');
+    const dot = document.querySelector('.notif-dot');
+    if (dot) dot.style.display = Number(data.unread || 0) > 0 ? 'block' : 'none';
+  } catch (error) {
+  }
+}
+
+async function updateBookingStatus(id, status) {
+  await apiFetch('/bookings/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status }) });
+  showToast(status === 'confirmed' ? 'Booking approved' : status === 'completed' ? 'Booking completed' : 'Booking cancelled');
+  await loadBookings();
+}
+
+function exportCsv() {
+  const rows = filteredBookings();
+  const header = ['Customer', 'Email', 'Vehicle', 'Start Date', 'End Date', 'Amount', 'Status'];
+  const csv = [header].concat(rows.map(booking => [
+    booking.user_name || 'Customer',
+    booking.email || '',
+    booking.car_name || [booking.brand, booking.model].filter(Boolean).join(' ') || 'Vehicle',
+    dateOnly(booking.start_date),
+    dateOnly(booking.end_date),
+    Number(booking.total_price || 0),
+    statusText[String(booking.status || '').toLowerCase()] || booking.status || 'pending'
+  ])).map(row => row.map(value => '"' + String(value).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'vendor-bookings.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function bindEvents() {
+  document.getElementById('searchInput').addEventListener('input', event => {
+    state.search = event.target.value.trim();
+    renderBookings();
+  });
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(item => item.classList.remove('active'));
+      tab.classList.add('active');
+      state.filter = tab.dataset.status;
+      renderBookings();
+    });
+  });
+  document.getElementById('refreshBtn').addEventListener('click', loadBookings);
+  document.getElementById('exportBtn').addEventListener('click', exportCsv);
+  document.getElementById('todayBtn').addEventListener('click', event => {
+    state.todayOnly = !state.todayOnly;
+    event.currentTarget.style.borderColor = state.todayOnly ? '#6c63ff' : '#e5e5e5';
+    event.currentTarget.style.color = state.todayOnly ? '#6c63ff' : '#555';
+    renderBookings();
+  });
+  document.getElementById('logoutLink').addEventListener('click', event => {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login.html?role=vendor';
+  });
+  document.querySelector('.notif-btn').addEventListener('click', async () => {
+    try {
+      const data = await apiFetch('/notifications');
+      const latest = (data.notifications || [])[0];
+      showToast(latest ? latest.message : 'No new notifications');
+      await apiFetch('/notifications/read', { method: 'PATCH' });
+      loadNotifications();
+    } catch (error) {
+      showToast('Could not load notifications');
+    }
+  });
+  document.addEventListener('click', async event => {
+    const button = event.target.closest('[data-status-action]');
+    if (!button || button.disabled) return;
+    const [id, status] = button.dataset.statusAction.split(':');
+    button.disabled = true;
+    try { await updateBookingStatus(id, status); } catch (error) { showToast(error.message || 'Could not update booking'); button.disabled = false; }
+  });
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!requireVendorSession()) return;
+  bindEvents();
+  await loadBookings();
+});
+</script>
+<script src="/app.js"></script>
+</body>
+</html>

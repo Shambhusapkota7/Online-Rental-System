@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Successful – VroomNepal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f2f7;
+      --card: #ffffff;
+      --primary: #4361ee;
+      --primary-light: #eef0fd;
+      --green: #22c55e;
+      --green-light: #dcfce7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --footer-bg: #1e293b;
+      --footer-text: #94a3b8;
+      --receipt-bg: #f8fafc;
+      --shadow: 0 8px 32px rgba(15,23,42,0.10);
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.07);
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 62px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-icon svg { fill: #fff; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-bell {
+      position: relative;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 6px;
+    }
+
+    .nav-bell .dot {
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid #fff;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      background: var(--primary-light);
+      padding: 5px 12px 5px 5px;
+      border-radius: 50px;
+    }
+
+    .nav-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .nav-user-info { line-height: 1.2; }
+    .nav-user-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .nav-user-role { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── MAIN ── */
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 48px 20px 60px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 44px 40px 36px;
+      width: 100%;
+      max-width: 460px;
+      text-align: center;
+      animation: slideUp 0.55s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* success icon */
+    .success-ring {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(var(--green) 0%, #a7f3d0 100%);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      animation: popIn 0.5s 0.2s cubic-bezier(.22,.68,0,1.4) both;
+      box-shadow: 0 0 0 8px var(--green-light);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .success-ring .inner {
+      width: 62px; height: 62px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .success-ring svg { color: #fff; }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.9rem;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* amount block */
+    .amount-block {
+      background: var(--primary-light);
+      border-radius: 14px;
+      padding: 18px 24px;
+      margin-bottom: 20px;
+    }
+
+    .amount-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .amount-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      color: var(--primary);
+      letter-spacing: -1px;
+    }
+
+    /* detail rows */
+    .details {
+      background: var(--receipt-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px;
+      font-size: 0.84rem;
+    }
+
+    .detail-row:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-key {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .detail-val {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip {
+      background: #e2e8f0;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* buttons */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(67,97,238,0.30);
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+      background: #3451d1;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(67,97,238,0.38);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--receipt-bg);
+      border-color: #cbd5e1;
+    }
+
+    .help-link {
+      display: block;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .help-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* ── RECEIPT MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .receipt {
+      background: #fff;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(15,23,42,0.22);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.22,.68,0,1.1);
+    }
+
+    .modal-overlay.open .receipt {
+      transform: translateY(0) scale(1);
+    }
+
+    .receipt-header {
+      background: var(--primary);
+      padding: 28px 28px 22px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .receipt-header h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.45rem;
+      font-weight: 400;
+      margin-bottom: 3px;
+    }
+
+    .receipt-header p {
+      font-size: 0.78rem;
+      opacity: 0.75;
+    }
+
+    /* tear edge */
+    .tear {
+      height: 20px;
+      background: var(--primary);
+      position: relative;
+    }
+
+    .tear::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 20px;
+      background: #fff;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    }
+
+    .receipt-body {
+      padding: 22px 28px 10px;
+    }
+
+    .receipt-amount {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .receipt-amount .label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .receipt-amount .value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.6rem;
+      color: var(--primary);
+      letter-spacing: -1px;
+    }
+
+    .receipt-divider {
+      border: none;
+      border-top: 2px dashed var(--border);
+      margin: 16px 0;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      padding: 6px 0;
+    }
+
+    .receipt-row .rk { color: var(--muted); }
+    .receipt-row .rv { font-weight: 600; color: var(--text); }
+
+    .receipt-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--green-light);
+      color: var(--green);
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+
+    .receipt-footer {
+      background: var(--receipt-bg);
+      border-top: 1px dashed var(--border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .receipt-footer .brand {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .receipt-footer .thanks {
+      font-size: 0.73rem;
+      color: var(--muted);
+    }
+
+    .receipt-close {
+      display: block;
+      width: calc(100% - 56px);
+      margin: 16px 28px 20px;
+      padding: 13px;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .receipt-close:hover { background: #1e293b; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      padding: 44px 60px 28px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #64748b;
+      margin-top: 10px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .footer-logo .icon {
+      width: 28px; height: 28px;
+      background: var(--primary);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .footer-col h4 {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e2e8f0;
+      margin-bottom: 14px;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 9px; }
+    .footer-col ul li a {
+      font-size: 0.82rem;
+      color: var(--footer-text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: #e2e8f0; }
+
+    .footer-newsletter {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .footer-newsletter input {
+      flex: 1;
+      background: #334155;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      outline: none;
+    }
+
+    .footer-newsletter input::placeholder { color: #64748b; }
+
+    .footer-newsletter button {
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      width: 36px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .footer-newsletter button:hover { background: #3451d1; }
+
+    .footer-bottom {
+      border-top: 1px solid #334155;
+      padding-top: 18px;
+      font-size: 0.75rem;
+      color: #475569;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 18px; }
+      .card { padding: 30px 20px; }
+      footer { padding: 32px 20px 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+    </div>
+    VroomNepal
+  </div>
+  <div class="nav-right">
+    <div class="nav-bell">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot"></span>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar">JD</div>
+      <div class="nav-user-info">
+        <div class="nav-user-name">John Doe</div>
+        <div class="nav-user-role">Customer</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="card">
+    <div class="success-ring">
+      <div class="inner">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1>Payment Successful</h1>
+    <p class="subtitle">Your payment has been completed successfully.<br/>We've sent a confirmation email to your account.</p>
+
+    <div class="amount-block">
+      <div class="amount-label">Amount Paid</div>
+      <div class="amount-value">Rs. 1,515.00</div>
+    </div>
+
+    <div class="details">
+      <div class="detail-row">
+        <span class="detail-key">Method</span>
+        <span class="detail-val">
+          <span class="chip">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Card
+          </span>
+        </span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Transaction ID</span>
+        <span class="detail-val">TXN-98234125</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Date &amp; Time</span>
+        <span class="detail-val">Oct 24, 2023 &nbsp;14:32 PM</span>
+      </div>
+    </div>
+
+    <a href="dashboard_customer.html" class="btn-primary">Go to Dashboard →</a>
+    <button class="btn-secondary" onclick="openReceipt()">View Receipt</button>
+
+    <p class="help-link">Need help? <a href="#">Visit our help center</a></p>
+  </div>
+</main>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receiptModal" onclick="closeOnOverlay(event)">
+  <div class="receipt">
+    <div class="receipt-header">
+      <h2>Payment Receipt</h2>
+      <p>Keep this for your records</p>
+    </div>
+    <div class="tear"></div>
+
+    <div class="receipt-body">
+      <div class="receipt-amount">
+        <div class="label">Total Paid</div>
+        <div class="value">Rs. 1,515.00</div>
+      </div>
+
+      <hr class="receipt-divider"/>
+
+      <div class="receipt-row">
+        <span class="rk">Customer Name</span>
+        <span class="rv">John Doe</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rk">Transaction ID</span>
+        <span class="rv">TXN-98234125</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rk">Payment Method</span>
+        <span class="rv">Card</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rk">Date</span>
+        <span class="rv">October 24, 2023</span>
+      </div>
+      <div class="receipt-row">
+        <span class="rk">Time</span>
+        <span class="rv">14:32 PM</span>
+      </div>
+
+      <hr class="receipt-divider"/>
+
+      <div class="receipt-status">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Payment Verified &amp; Successful
+      </div>
+    </div>
+
+    <div class="receipt-footer">
+      <span class="brand">VroomNepal Gallery</span>
+      <span class="thanks">Thank you! 🙏</span>
+    </div>
+
+    <button class="receipt-close" onclick="closeReceipt()">Close</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
+        </div>
+        VroomNepal Gallery
+      </div>
+      <p>Defining the future of luxury mobility through meticulous curation and technological precision.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#">Browse Luxury</a></li>
+        <li><a href="#">List Vehicle</a></li>
+        <li><a href="#">Investment</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Help Center</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Stay Updated</h4>
+      <div class="footer-newsletter">
+        <input type="email" placeholder="Email address"/>
+        <button>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © 2024 VroomNepal Gallery. Precision in motion.
+  </div>
+</footer>
+
+<script>
+  function openReceipt() {
+    document.getElementById('receiptModal').classList.add('open');
+  }
+
+  function closeReceipt() {
+    document.getElementById('receiptModal').classList.remove('open');
+  }
+
+  function closeOnOverlay(e) {
+    if (e.target === document.getElementById('receiptModal')) closeReceipt();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeReceipt();
+  });
+
+  function readJson(key) {
+    try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (error) { return null; }
+  }
+
+  function money(value) {
+    return 'Rs. ' + Number(value || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  function titleCase(value) {
+    return String(value || 'card').replace(/[_-]/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+  }
+
+  function paymentDateParts(value) {
+    const date = value ? new Date(value) : new Date();
+    return {
+      full: date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      date: date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+    };
+  }
+
+  function populateSuccessPage() {
+    const payment = readJson('currentPayment') || {};
+    const booking = readJson('currentBooking') || {};
+    const user = readJson('user') || {};
+    const amount = payment.amount || booking.total_price || booking.price || 0;
+    const method = titleCase(payment.payment_method || 'card');
+    const transactionId = payment.transaction_id || payment.reference_id || (payment.id ? `PAY-${payment.id}` : `TXN-${Date.now()}`);
+    const dateParts = paymentDateParts(payment.created_at || payment.payment_date);
+    const customerName = user.name || booking.user_name || 'Customer';
+    const initials = customerName.split(/\s+/).filter(Boolean).map(part => part[0]).join('').slice(0, 2).toUpperCase() || 'CU';
+
+    document.querySelector('.nav-avatar').textContent = initials;
+    document.querySelector('.nav-user-name').textContent = customerName;
+    document.querySelector('.nav-user-role').textContent = user.role === 'vendor' ? 'Vendor' : user.role === 'admin' ? 'Admin' : 'Customer';
+    document.querySelector('.amount-value').textContent = money(amount);
+
+    const detailValues = document.querySelectorAll('.details .detail-val');
+    if (detailValues[0]) {
+      detailValues[0].innerHTML = `<span class="chip">${method}</span>`;
+    }
+    if (detailValues[1]) detailValues[1].textContent = transactionId;
+    if (detailValues[2]) detailValues[2].textContent = dateParts.full;
+
+    document.querySelector('.receipt-amount .value').textContent = money(amount);
+    const receiptValues = document.querySelectorAll('.receipt-row .rv');
+    if (receiptValues[0]) receiptValues[0].textContent = customerName;
+    if (receiptValues[1]) receiptValues[1].textContent = transactionId;
+    if (receiptValues[2]) receiptValues[2].textContent = method;
+    if (receiptValues[3]) receiptValues[3].textContent = dateParts.date;
+    if (receiptValues[4]) receiptValues[4].textContent = dateParts.time;
+  }
+
+  document.addEventListener('DOMContentLoaded', populateSuccessPage);
+</script>
+<script src="/app.js"></script>
+</body>
+</html>

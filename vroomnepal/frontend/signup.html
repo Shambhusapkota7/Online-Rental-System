@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VroomNepal - Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f0f8;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 16px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px 28px 24px;
+    width: 340px;
+    max-width: 100%;
+    box-shadow: 0 8px 32px rgba(80,80,180,0.10), 0 1.5px 6px rgba(0,0,0,0.07);
+  }
+
+  .logo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 22px;
+  }
+
+  .logo-text {
+    font-size: 17px;
+    font-weight: 700;
+    color: #5b5fc7;
+  }
+
+  .field {
+    margin-bottom: 11px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #222238;
+    margin-bottom: 5px;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 9px;
+    background: #fafafa;
+    box-shadow: 0 0 0 1.5px #e2e2f0, 0 2px 8px rgba(91,95,199,0.10);
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+
+  .input-wrap:focus-within {
+    box-shadow: 0 0 0 2px #5b5fc7, 0 2px 12px rgba(91,95,199,0.18);
+    background: #fff;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 11px;
+    width: 14px;
+    height: 14px;
+    stroke: #b0b0c8;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 10px 34px 10px 32px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font-size: 12.5px;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a2e;
+    outline: none;
+  }
+
+  .field input::placeholder {
+    color: #c0c0d4;
+  }
+
+  .eye-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .eye-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: #b0b0c8;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .signup-btn {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(to right, #7b61ff, #5a42e0);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    margin-top: 14px;
+    margin-bottom: 13px;
+    box-shadow: 0 4px 14px rgba(91,95,199,0.30);
+    transition: opacity 0.2s;
+  }
+
+  .signup-btn:hover {
+    opacity: 0.92;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: #ebebf4;
+  }
+
+  .divider-text {
+    font-size: 10px;
+    color: #aaaabc;
+    letter-spacing: 1px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .btn-google {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 9px;
+    background: #fafafa;
+    color: #333348;
+    font-size: 12.5px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 0 0 1.5px #e2e2f0, 0 2px 8px rgba(0,0,0,0.05);
+    transition: background 0.2s;
+    margin-bottom: 14px;
+  }
+
+  .btn-google:hover {
+    background: #ededf8;
+  }
+
+  .btn-google svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .footer {
+    font-size: 11.5px;
+    color: #999aaa;
+    text-align: center;
+  }
+
+  .footer a {
+    color: #5b5fc7;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 3px;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  .input-wrap.error {
+    box-shadow: 0 0 0 2px #e74c3c, 0 2px 8px rgba(231,76,60,0.12);
+  }
+
+  .field-error {
+    font-size: 11px;
+    color: #e74c3c;
+    margin-top: 4px;
+    min-height: 15px;
+    display: block;
+  }
+
+  .extra-links {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 11.5px;
+    color: #999aaa;
+    line-height: 1.9;
+  }
+
+  .extra-links a {
+    color: #5b5fc7;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .extra-links a:hover {
+    text-decoration: underline;
+  }
+
+  .separator {
+    margin: 0 8px;
+    color: #c0c0d4;
+  }
+
+  .role-note {
+    width: 100%;
+    margin: -8px 0 14px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    background: #f7f7ff;
+    color: #4b4fba;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: inset 0 0 0 1px #e3e4ff;
+  }
+
+  .api-message {
+    width: 100%;
+    min-height: 18px;
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .api-message.error { color: #e74c3c; }
+  .api-message.success { color: #1f9d55; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <svg width="50" height="50" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="28" r="28" fill="#eeeeff"/>
+      <polyline points="10,18 19,38 28,22" fill="none" stroke="#5b5fc7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="28,22 37,38 46,18" fill="none" stroke="#5b5fc7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="14" y1="41" x2="42" y2="41" stroke="#5b5fc7" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+
+    <span class="logo-text">VroomNepal</span>
+  </div>
+
+  <div class="role-note" id="roleNote">Customer Sign Up</div>
+  <div class="api-message" id="apiMessage"></div>
+
+  <!-- Full Name -->
+  <div class="field">
+    <label>Full Name</label>
+
+    <div class="input-wrap">
+      <input id="name" type="text" placeholder="John Doe" autocomplete="name">
+    </div>
+  </div>
+
+  <!-- Phone -->
+  <div class="field">
+    <label>Phone Number</label>
+
+    <div class="input-wrap">
+      <input id="phone" type="text" placeholder="+977 9812345678" autocomplete="tel">
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="field">
+    <label>Email</label>
+
+    <div class="input-wrap">
+      <input id="email" type="email" placeholder="example@email.com" autocomplete="email">
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="field">
+    <label>Password</label>
+
+    <div class="input-wrap">
+      <input id="password" type="password" placeholder="Password" autocomplete="new-password">
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="field">
+    <label>Confirm Password</label>
+
+    <div class="input-wrap">
+      <input id="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password">
+    </div>
+  </div>
+
+  <!-- Sign Up Button -->
+  <button class="signup-btn" id="signupBtn" type="button">
+    Sign Up
+  </button>
+
+  <!-- Divider -->
+  <div class="divider">
+    <div class="divider-line"></div>
+
+    <span class="divider-text">
+      OR CONNECT WITH
+    </span>
+
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Google -->
+  <button class="btn-google">
+    Continue with Google
+  </button>
+
+  <!-- Footer -->
+  <div class="footer">
+    Already have an account?
+    <a href="login.html">Login</a>
+  </div>
+
+  <!-- Added Admin + Vendor Signup -->
+  <div class="extra-links">
+    <a href="signup.html?role=user">
+      Sign up as Customer
+    </a>
+
+    <span class="separator">|</span>
+
+    <a href="signup.html?role=admin">
+      Sign up as Admin
+    </a>
+
+    <span class="separator">|</span>
+
+    <a href="signup.html?role=vendor">
+      Sign up as Vendor
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+  const API_BASE = '/api';
+  const roleLabels = {
+    user: 'Customer Sign Up',
+    vendor: 'Vendor Sign Up',
+    admin: 'Admin Sign Up',
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedRole = ['user', 'vendor', 'admin'].includes(params.get('role')) ? params.get('role') : 'user';
+  const roleNote = document.getElementById('roleNote');
+  const apiMessage = document.getElementById('apiMessage');
+  const signupBtn = document.getElementById('signupBtn');
+  const nameInput = document.getElementById('name');
+  const phoneInput = document.getElementById('phone');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
+
+  roleNote.textContent = roleLabels[requestedRole];
+
+  function showMessage(message, type = 'error') {
+    apiMessage.textContent = message;
+    apiMessage.className = `api-message ${type}`;
+  }
+
+  function setLoading(isLoading) {
+    signupBtn.disabled = isLoading;
+    signupBtn.textContent = isLoading ? 'Creating account...' : 'Sign Up';
+  }
+
+  async function handleSignup() {
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (!name || !email || !password || !confirmPassword) {
+      showMessage('Name, email, and password are required.');
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage('Password must be at least 6 characters.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage('Passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
+    showMessage('');
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, email, password, role: requestedRole }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        showMessage(data.message || 'Signup failed. Please try again.');
+        return;
+      }
+
+      showMessage('Account created! Redirecting to login...', 'success');
+      setTimeout(() => {
+        window.location.href = `login.html?role=${encodeURIComponent(requestedRole)}`;
+      }, 700);
+    } catch (error) {
+      showMessage('Unable to connect to the server.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  signupBtn.addEventListener('click', handleSignup);
+  [nameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput].forEach(input => {
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter') handleSignup();
+    });
+  });
+</script>
+
+<script src="/app.js"></script>
+</body>
+</html>

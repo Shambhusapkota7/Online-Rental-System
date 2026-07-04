@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vroom | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="logo.png" /></span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-th"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#booking-requests" class="nav-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="/vehicleListing.html" class="nav-item">
+                    <i class="fas fa-car"></i>
+                    <span>Vehicles</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>System Health</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button class="new-listing-btn">
+                    <i class="fas fa-plus"></i>
+                    New Listing
+                </button>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Dashboard</h1>
+                <div class="header-right">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <span class="user-name">John Doe</span>
+                        <div class="user-avatar">JD</div>
+                    </div>
+                    <button class="vendor-menu">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Top Cards -->
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">MONTHLY REVENUE</span>
+                            <span class="growth-badge">+14% Growth</span>
+                        </div>
+                        <div class="card-value">Rs. 12,450.00</div>
+                        <div class="card-bar"></div>
+                    </div>
+
+                    <div class="card info-card">
+                        <div class="card-header">
+                            <span class="card-title">TOTAL EARNINGS</span>
+                        </div>
+                        <div class="card-subtitle">Lifetime platform revenue</div>
+                        <div class="card-value">Rs.84,200.00</div>
+                    </div>
+
+                    <div class="card fleet-card">
+                        <div class="fleet-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="fleet-count">8</div>
+                        <div class="fleet-label">Total Fleet Size</div>
+                    </div>
+                </div>
+
+                <!-- Charts and Requests -->
+                <div class="charts-section">
+                    <!-- Revenue Performance -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h2>Revenue Performance</h2>
+                            <p>6-month analytical projection</p>
+                            <div class="chart-filter">
+                                <button class="filter-btn active">Last 6 Months</button>
+                            </div>
+                        </div>
+                        <div class="chart-box">
+                            <svg viewBox="0 0 400 200" class="bar-chart">
+                                <rect x="30" y="140" width="40" height="20" fill="#E8E8E8" class="bar"></rect>
+                                <rect x="80" y="130" width="40" height="30" fill="#E8E8E8" class="bar"></rect>
+                                <rect x="130" y="120" width="40" height="40" fill="#E8E8E8" class="bar"></rect>
+                                <rect x="180" y="100" width="40" height="60" fill="#E8E8E8" class="bar"></rect>
+                                <rect x="230" y="60" width="40" height="100" fill="#5B4EFF" class="bar current"></rect>
+                                <rect x="280" y="80" width="40" height="80" fill="#E8E8E8" class="bar"></rect>
+                                
+                                <text x="30" y="175" text-anchor="middle" class="chart-label">JAN</text>
+                                <text x="80" y="175" text-anchor="middle" class="chart-label">FEB</text>
+                                <text x="130" y="175" text-anchor="middle" class="chart-label">MAR</text>
+                                <text x="180" y="175" text-anchor="middle" class="chart-label">APR</text>
+                                <text x="230" y="175" text-anchor="middle" class="chart-label">MAY</text>
+                                <text x="280" y="175" text-anchor="middle" class="chart-label">JUN</text>
+                            </svg>
+                            <div class="chart-label-current">Current</div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Requests -->
+                    <div class="requests-container" id="booking-requests">
+                        <h2>Booking Requests</h2>
+                        <div class="request-item">
+                            <div class="request-avatar">MP</div>
+                            <div class="request-info">
+                                <div class="request-name">Marco<br>Polo</div>
+                                <div class="request-details">Porsche 911<br>+ 3 Days</div>
+                            </div>
+                            <button class="request-action accept">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="request-action reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="request-item">
+                            <div class="request-avatar">SC</div>
+                            <div class="request-info">
+                                <div class="request-name">Sarah<br>Chen</div>
+                                <div class="request-details">Tesla Model S<br>5 + 10ys</div>
+                            </div>
+                            <button class="request-action accept">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="request-action reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <a href="#" class="view-all">View All Requests <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Active Fleet -->
+                <div class="fleet-section">
+                    <div class="fleet-header">
+                        <h2>Active Fleet</h2>
+                        <p>Monitor vehicle status and real-time utilization</p>
+                        <div class="fleet-filters">
+                            <button class="filter-btn">All Vehicles</button>
+                            <button class="filter-btn available">Available (5)</button>
+                            <button class="filter-btn rented">Rented (3)</button>
+                        </div>
+                    </div>
+
+                    <div class="vehicle-grid">
+                        <div class="vehicle-card">
+                            <div class="vehicle-status available">AVAILABLE</div>
+                            <img src="OIP.jpg">
+                            <div class="vehicle-info">
+                                <h3>Porsche 911 Carrera S</h3>
+                                <p class="price">Rs.450 <span>day</span></p>
+                                <div class="vehicle-specs">
+                                    <span><i class="fas fa-cog"></i> Auto</span>
+                                    <span><i class="fas fa-tachometer-alt"></i> 3.22mpg</span>
+                                </div>
+                                <a href="#" class="manage-link">Manage Vehicle</a>
+                            </div>
+                        </div>
+
+                        <div class="vehicle-card">
+                            <div class="vehicle-status rented">RENTED</div>
+                            <img src="OIP.webp">
+                            <div class="vehicle-info">
+                                <h3>Tesla Model S Plaid</h3>
+                                <p class="price">Rs.320 <span>day</span></p>
+                                <div class="vehicle-specs">
+                                    <span><i class="fas fa-plug"></i> Electric</span>
+                                    <span><i class="fas fa-wifi"></i> 30mi</span>
+                                </div>
+                                <div class="vehicle-status-info">
+                                    <span class="due-back">DUE BACK: OCT 14</span>
+                                    <span class="live-track">Live Track</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vehicle-card">
+                            <div class="vehicle-status service">IN SERVICE</div>
+                            <img src="screenshot-2024-09-11-11-57-27-1.avif">
+                            <div class="vehicle-info">
+                                <h3>Mercedes-AMG G63</h3>
+                                <p class="price">Rs.680 <span>day</span></p>
+                                <div class="vehicle-specs">
+                                    <span><i class="fas fa-cog"></i> Manual</span>
+                                    <span><i class="fas fa-tachometer-alt"></i> 2.8mpg</span>
+                                </div>
+                                <div class="vehicle-status-info">
+                                    <span class="ready">READY IN: 2 DAYS</span>
+                                    <span class="view-logs">View Logs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

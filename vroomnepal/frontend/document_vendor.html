@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documents – VroomNepal Vendor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f6fa;
+      color: #1a1a2e;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 155px;
+      background: #fff;
+      border-right: 1px solid #e8e8f0;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      padding: 18px 16px 16px;
+      border-bottom: 1px solid #f0f0f5;
+    }
+    .logo img { height: 28px; }
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #5b2be0;
+      letter-spacing: -0.5px;
+    }
+    .logo-text span { color: #1a1a2e; }
+
+    nav { flex: 1; padding: 10px 0; }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #6b6b80;
+      text-decoration: none;
+      border-radius: 0;
+      transition: background 0.15s, color 0.15s;
+      position: relative;
+    }
+    nav a:hover { background: #f5f3ff; color: #5b2be0; }
+    nav a.active {
+      background: #f0ecff;
+      color: #5b2be0;
+      font-weight: 600;
+    }
+    nav a.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 4px; bottom: 4px;
+      width: 3px;
+      background: #5b2be0;
+      border-radius: 0 3px 3px 0;
+    }
+
+    nav a svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+    .logout-wrap {
+      padding: 14px 16px;
+      border-top: 1px solid #f0f0f5;
+    }
+    .logout-wrap a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #6b6b80;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .logout-wrap a:hover { color: #e53e3e; }
+    .logout-wrap svg { width: 17px; height: 17px; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e8e8f0;
+      padding: 0 28px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 260px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: #b0b0c0;
+      width: 15px; height: 15px;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border: 1px solid #e8e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #6b6b80;
+      background: #fafafa;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-wrap input::placeholder { color: #b0b0c0; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .bell-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b6b80;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+    .bell-btn svg { width: 20px; height: 20px; }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-info .name-role { text-align: right; }
+    .user-info .name { font-size: 13.5px; font-weight: 600; color: #1a1a2e; }
+    .user-info .role { font-size: 11.5px; color: #9b9bb0; }
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #c4b5fd;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-placeholder {
+      font-size: 14px; font-weight: 700; color: #5b2be0;
+    }
+
+    /* ── Content ── */
+    .content {
+      flex: 1;
+      padding: 28px 32px;
+      overflow-y: auto;
+    }
+
+    /* Verified Banner */
+    .verified-banner {
+      background: #fff;
+      border: 1px solid #e8e8f0;
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+    .verified-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .check-circle {
+      width: 38px; height: 38px;
+      background: #e9faf0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-circle svg { width: 20px; height: 20px; color: #22c55e; }
+    .verified-left h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .verified-left p { font-size: 13px; color: #6b6b80; }
+
+    .badge-btn {
+      background: #1a1a2e;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .badge-btn:hover { background: #2d2d4a; }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-header h2 { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+    .section-header p { font-size: 13px; color: #6b6b80; margin-top: 3px; }
+
+    .doc-stats {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .stat-badge {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .stat-total {
+      background: #f0f0f8;
+      color: #6b6b80;
+    }
+    .stat-total span { display: block; font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .stat-current {
+      background: #e9faf0;
+      color: #16a34a;
+    }
+    .stat-current span { display: block; font-size: 16px; font-weight: 700; color: #16a34a; }
+
+    /* Document Cards */
+    .doc-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .doc-card {
+      background: #fff;
+      border: 1px solid #e8e8f0;
+      border-radius: 12px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .doc-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: #f5f3ff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-icon svg { width: 22px; height: 22px; color: #7c3aed; }
+    .doc-icon.rejected-icon { background: #fff1f1; }
+    .doc-icon.rejected-icon svg { color: #ef4444; }
+    .doc-icon.pending-icon { background: #fffbeb; }
+    .doc-icon.pending-icon svg { color: #f59e0b; }
+
+    .doc-info { flex: 1; }
+    .doc-info h4 { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .doc-info p { font-size: 12px; color: #9b9bb0; }
+    .doc-info p.rejected-text { color: #ef4444; }
+
+    .doc-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .status-badge svg { width: 13px; height: 13px; }
+    .status-verified { background: #e9faf0; color: #16a34a; }
+    .status-pending { background: #fffbeb; color: #d97706; }
+    .status-rejected { background: #fff1f1; color: #ef4444; }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9b9bb0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 5px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .icon-btn:hover { color: #5b2be0; background: #f0ecff; }
+    .icon-btn svg { width: 17px; height: 17px; }
+
+    .replace-btn {
+      background: #5b2be0;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+    .replace-btn:hover { background: #4a1fc0; }
+
+    .replace-btn:disabled,
+    .badge-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      min-height: 18px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5b2be0;
+    }
+
+    .status-message.error { color: #ef4444; }
+    .status-message.success { color: #16a34a; }
+
+    /* Chat bubble */
+    .chat-fab {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      width: 48px; height: 48px;
+      background: #1a1a2e;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: transform 0.15s;
+    }
+    .chat-fab:hover { transform: scale(1.07); }
+    .chat-fab svg { width: 22px; height: 22px; color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="logo">
+    <!-- VroomNepal logo text approximation -->
+    <div style="display:flex;align-items:center;gap:6px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="#5b2be0"/>
+        <path d="M5 17L9 7l3 7 2-4 3 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-size:14px;font-weight:700;color:#5b2be0;letter-spacing:-0.3px;">Vroom<span style="color:#1a1a2e;">Nepal</span></span>
+    </div>
+  </div>
+
+  <nav>
+    <a href="dashboard_vendor.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Dashboard
+    </a>
+    <a href="/dashboard_vendor.html#vehicles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="15" height="13" rx="2"/>
+        <path d="M16 8h4l3 5v4h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+      My Vehicles
+    </a>
+    <a href="/addvehicle_vendor.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Add Vehicle
+    </a>
+    <a href="/booking_vendor.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      Bookings
+    </a>
+    <a href="/dashboard_vendor.html#earnings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      Earnings
+    </a>
+    <a href="/document_vendor.html" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      Documents
+    </a>
+    <a href="/dashboard_vendor.html#settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="logout-wrap">
+    <a href="/login.html?role=vendor" id="logoutLink">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" placeholder="Search documentation..."/>
+    </div>
+    <div class="topbar-right">
+      <button class="bell-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+      <div class="user-info">
+        <div class="name-role">
+          <div class="name" id="vendorName">Vendor</div>
+          <div class="role">Vendor</div>
+        </div>
+        <div class="avatar">
+          <span class="avatar-placeholder" id="vendorAvatar">VN</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Verified Banner -->
+    <div class="verified-banner">
+      <div class="verified-left">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Your profile is fully verified</h3>
+          <p>All credentials approved by compliance. You're cleared for high-tier listings.</p>
+        </div>
+      </div>
+      <button class="badge-btn" id="badgeBtn" type="button">View Digital Badge</button>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header">
+      <div>
+        <h2>Required Documents</h2>
+        <p>Maintain valid documentation to ensure uninterrupted service.</p>
+      </div>
+      <div class="doc-stats">
+        <div class="stat-badge stat-total">
+          <span id="totalDocs">3</span>
+          TOTAL
+        </div>
+        <div class="stat-badge stat-current">
+          <span id="currentDocs">0</span>
+          CURRENT
+        </div>
+      </div>
+    </div>
+
+    <!-- Document List -->
+    <div class="status-message" id="statusMessage"></div>
+    <input id="documentInput" type="file" accept=".jpg,.jpeg,.png,.pdf" hidden>
+    <div class="doc-list">
+
+      <!-- National ID/Passport – Verified -->
+      <div class="doc-card">
+        <div class="doc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <circle cx="8" cy="12" r="2"/>
+            <path d="M13 9h5M13 12h3"/>
+          </svg>
+        </div>
+        <div class="doc-info">
+          <h4>National ID/Passport</h4>
+          <p>Uploaded Oct 12, 2023</p>
+        </div>
+        <div class="doc-actions">
+          <span class="status-badge status-verified">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Verified
+          </span>
+          <button class="icon-btn" title="View">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Driving License – Pending -->
+      <div class="doc-card">
+        <div class="doc-icon pending-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </div>
+        <div class="doc-info">
+          <h4>Driving License</h4>
+          <p>Under review since Oct 14, 2023</p>
+        </div>
+        <div class="doc-actions">
+          <span class="status-badge status-pending">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Pending
+          </span>
+          <button class="icon-btn" title="Edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Business License – Rejected -->
+      <div class="doc-card">
+        <div class="doc-icon rejected-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <div class="doc-info">
+          <h4>Business License</h4>
+          <p class="rejected-text">Rejected: Document has expired</p>
+        </div>
+        <div class="doc-actions">
+          <span class="status-badge status-rejected">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            Rejected
+          </span>
+          <button class="replace-btn">REPLACE</button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Chat FAB -->
+<div class="chat-fab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</div>
+
+<script>
+  const API_BASE = '/api';
+  const iconMarkup = {
+    national_id: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 9h5M13 12h3"/></svg>',
+    driving_license: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    business_license: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  };
+  let selectedDocumentType = null;
+
+  function getUser() {
+    try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; }
+  }
+
+  function getToken() {
+    return localStorage.getItem('token');
+  }
+
+  function initials(name) {
+    return String(name || 'Vendor')
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(part => part[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'VN';
+  }
+
+  function requireVendorSession() {
+    const user = getUser();
+    if (!getToken() || !['vendor', 'admin'].includes(user && user.role)) {
+      window.location.href = '/login.html?role=vendor';
+      return false;
+    }
+
+    document.getElementById('vendorName').textContent = user.name || 'Vendor';
+    document.getElementById('vendorAvatar').textContent = initials(user.name);
+    return true;
+  }
+
+  function showMessage(message, type = '') {
+    const box = document.getElementById('statusMessage');
+    box.textContent = message || '';
+    box.className = `status-message ${type}`;
+  }
+
+  async function apiFetch(path, options = {}) {
+    const headers = Object.assign({}, options.headers || {}, {
+      Authorization: `Bearer ${getToken()}`,
+    });
+    if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+
+    const response = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success === false) throw new Error(data.message || 'Request failed');
+    return data;
+  }
+
+  function statusIcon(status) {
+    if (status === 'verified') return '<polyline points="20 6 9 17 4 12"/>';
+    if (status === 'pending') return '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>';
+    if (status === 'rejected') return '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+    return '<path d="M12 5v14M5 12h14"/>';
+  }
+
+  function documentSubtitle(document) {
+    if (document.status === 'missing') return 'Required before full vendor verification';
+    if (document.status === 'pending') return `Under review${document.file_name ? ` - ${document.file_name}` : ''}`;
+    if (document.status === 'verified') return `Verified${document.uploaded_at ? ` - uploaded ${String(document.uploaded_at).slice(0, 10)}` : ''}`;
+    return document.rejection_reason ? `Rejected: ${document.rejection_reason}` : 'Rejected: Please replace this document';
+  }
+
+  function renderDocuments(documents, stats) {
+    document.getElementById('totalDocs').textContent = stats.total;
+    document.getElementById('currentDocs').textContent = stats.complete ? 'ALL' : stats.verified;
+
+    const banner = document.querySelector('.verified-banner');
+    const bannerTitle = banner.querySelector('h3');
+    const bannerText = banner.querySelector('p');
+    if (stats.complete) {
+      bannerTitle.textContent = 'Your profile is fully verified';
+      bannerText.textContent = "All credentials approved by compliance. You're cleared for high-tier listings.";
+    } else if (stats.pending) {
+      bannerTitle.textContent = 'Your verification is under review';
+      bannerText.textContent = 'Submitted documents are connected to backend and waiting for admin approval.';
+    } else {
+      bannerTitle.textContent = 'Complete vendor verification';
+      bannerText.textContent = 'Upload all required documents to unlock uninterrupted vendor operations.';
+    }
+
+    document.querySelector('.doc-list').innerHTML = documents.map(document => {
+      const statusClass = document.status === 'verified'
+        ? 'status-verified'
+        : document.status === 'rejected'
+          ? 'status-rejected'
+          : document.status === 'pending'
+            ? 'status-pending'
+            : 'status-pending';
+      const iconClass = document.status === 'rejected'
+        ? 'rejected-icon'
+        : document.status === 'pending' || document.status === 'missing'
+          ? 'pending-icon'
+          : '';
+      const actionText = document.status === 'missing' ? 'UPLOAD' : 'REPLACE';
+
+      return `
+        <div class="doc-card" data-doc-type="${document.document_type}">
+          <div class="doc-icon ${iconClass}">
+            ${iconMarkup[document.document_type] || iconMarkup.business_license}
+          </div>
+          <div class="doc-info">
+            <h4>${document.title}</h4>
+            <p class="${document.status === 'rejected' ? 'rejected-text' : ''}">${documentSubtitle(document)}</p>
+          </div>
+          <div class="doc-actions">
+            <span class="status-badge ${statusClass}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                ${statusIcon(document.status)}
+              </svg>
+              ${document.status === 'missing' ? 'Missing' : document.status[0].toUpperCase() + document.status.slice(1)}
+            </span>
+            ${document.file_name ? `<button class="icon-btn" type="button" title="${document.file_name}">${iconMarkup.national_id}</button>` : ''}
+            <button class="replace-btn" type="button" data-upload-doc="${document.document_type}">${actionText}</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function loadDocuments() {
+    showMessage('Loading vendor documents...');
+    try {
+      const data = await apiFetch('/vendor-documents');
+      renderDocuments(data.documents || [], data.stats || { total: 3, verified: 0, pending: 0, complete: false });
+      showMessage('', 'success');
+    } catch (error) {
+      showMessage(error.message || 'Could not load vendor documents.', 'error');
+    }
+  }
+
+  async function uploadSelectedDocument(file) {
+    if (!selectedDocumentType || !file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      showMessage('Please choose a file under 15MB.', 'error');
+      return;
+    }
+
+    showMessage('Submitting document for verification...');
+    try {
+      const fileData = await readFileData(file);
+      await apiFetch('/vendor-documents', {
+        method: 'POST',
+        body: JSON.stringify({
+          document_type: selectedDocumentType,
+          file_name: file.name,
+          file_type: file.type || 'application/octet-stream',
+          file_size: file.size,
+          file_data: fileData,
+        }),
+      });
+      showMessage('Document submitted for verification.', 'success');
+      await loadDocuments();
+    } catch (error) {
+      showMessage(error.message || 'Could not submit document.', 'error');
+    } finally {
+      selectedDocumentType = null;
+      document.getElementById('documentInput').value = '';
+    }
+  }
+
+  function readFileData(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Could not read selected file.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.addEventListener('click', event => {
+    const uploadButton = event.target.closest('[data-upload-doc]');
+    if (uploadButton) {
+      selectedDocumentType = uploadButton.dataset.uploadDoc;
+      document.getElementById('documentInput').click();
+      return;
+    }
+
+    if (event.target.closest('#logoutLink')) {
+      event.preventDefault();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html?role=vendor';
+      return;
+    }
+
+    if (event.target.closest('#badgeBtn')) {
+      showMessage('Digital badge reflects the live backend verification status.', 'success');
+    }
+  });
+
+  document.getElementById('documentInput').addEventListener('change', event => {
+    uploadSelectedDocument(event.target.files[0]);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!requireVendorSession()) return;
+    loadDocuments();
+  });
+</script>
+<script src="/app.js"></script>
+</body>
+</html>

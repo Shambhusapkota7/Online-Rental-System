@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VroomNepal - Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* NAV */
+   nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(90deg, #7b61ff, #6a5cff);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    box-shadow: 0 2px 20px rgba(123,97,255,.3);
+    border-bottom: 3px solid #8fd3ff;
+  }
+
+  .nav-logo {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .nav-links a.active {
+    color: #ffffff;
+    font-weight: 500;
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 2px;
+  }
+
+  .nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-icon {
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* PAGE BODY */
+  .page-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  /* CARD */
+  .booking-card {
+    background-color: #6e718e;
+    border-radius: 20px;
+    padding: 32px 36px;
+    width: 720px;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 36px;
+
+    /* Card border shadow — subtle inner border + layered outer glow */
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+      0 0 0 1px rgba(80, 80, 160, 0.35),
+      0 8px 24px rgba(30, 30, 80, 0.35),
+      0 20px 48px rgba(20, 20, 60, 0.28),
+      0 2px 6px rgba(255, 255, 255, 0.08) inset;
+  }
+
+  /* LEFT COLUMN */
+  .left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .luxury-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .car-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+
+  .car-specs {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 2px;
+  }
+
+  .spec-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+  }
+
+  .spec-item svg {
+    width: 13px;
+    height: 13px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .car-image-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #5a5e9a;
+    margin-top: 6px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .car-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .car-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #3a3a5e 0%, #4a4a78 40%, #2e2e50 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .daily-rate-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .daily-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 2px;
+  }
+
+  .rate-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .rate-unit {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .fuel-badge {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 3px 9px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    align-self: flex-end;
+    margin-bottom: 3px;
+  }
+
+  /* RIGHT COLUMN */
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+
+  .date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .field-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .field-input {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .field-input span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  .field-input input {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .field-input input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .field-input svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: rgba(255,255,255,0.6);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* Pricing */
+  .pricing-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pricing-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .pricing-value {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 10px;
+    margin-top: 2px;
+  }
+
+  .total-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .total-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff6b8a;
+  }
+
+  /* Confirm button */
+  .confirm-btn {
+    background: #6c6fcf;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s;
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .confirm-btn:hover {
+    background: #5a5dbf;
+  }
+
+  .confirm-btn .arrow {
+    font-size: 16px;
+  }
+
+  .cancel-note {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VroomNepal</div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="#" class="active">Vehicles</a>
+    <a href="#">My Bookings</a>
+  </div>
+  <div class="nav-icons">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </span>
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M5.98 20.45A8.001 8.001 0 0 1 20 20.45"/></svg>
+    </span>
+  </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+  <div class="booking-card">
+
+    <!-- LEFT -->
+    <div class="left-col">
+      <div class="luxury-label">Luxury Elite</div>
+      <div class="car-title">Porsche 911<br>GT3</div>
+      <div class="car-specs">
+        <div class="spec-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          318 km/h
+        </div>
+        <div class="spec-item">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Manual
+        </div>
+      </div>
+
+      <!-- Car image -->
+      <div class="car-image-wrap">
+        <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs>
+            <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2a2a4a"/>
+              <stop offset="100%" stop-color="#1a1a30"/>
+            </linearGradient>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#6a6a8a"/>
+              <stop offset="40%" stop-color="#4a4a6a"/>
+              <stop offset="100%" stop-color="#2a2a4a"/>
+            </linearGradient>
+            <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#5a5a7a"/>
+              <stop offset="100%" stop-color="#3a3a5a"/>
+            </linearGradient>
+            <linearGradient id="wheelGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#555"/>
+              <stop offset="100%" stop-color="#222"/>
+            </linearGradient>
+            <linearGradient id="rimGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#9a6fd8"/>
+              <stop offset="100%" stop-color="#6a3fa8"/>
+            </linearGradient>
+            <radialGradient id="headlightGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffe080" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#ffe080" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="300" height="160" fill="url(#bgGrad)"/>
+          <ellipse cx="152" cy="142" rx="110" ry="8" fill="rgba(0,0,0,0.5)"/>
+          <path d="M52 118 Q55 100 75 95 L90 80 L210 80 L235 95 Q250 100 252 118 Z" fill="url(#bodyGrad)"/>
+          <path d="M52 118 Q50 122 55 128 L252 128 Q256 122 252 118 Z" fill="#3a3a5a"/>
+          <path d="M100 80 Q108 58 118 52 L190 52 Q200 54 208 62 L220 80 Z" fill="url(#roofGrad)"/>
+          <path d="M108 78 Q114 60 122 55 L185 55 Q193 60 200 70 L205 78 Z" fill="rgba(100,130,180,0.35)" stroke="rgba(160,180,220,0.3)" stroke-width="0.5"/>
+          <path d="M100 78 L108 58 L118 55 L108 78 Z" fill="rgba(80,100,150,0.3)" stroke="rgba(140,160,200,0.3)" stroke-width="0.5"/>
+          <path d="M95 80 Q125 84 165 84 Q195 84 220 80" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <rect x="72" y="115" width="162" height="8" rx="2" fill="#252545"/>
+          <path d="M210 80 Q225 86 230 92" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <path d="M75 80 Q65 86 62 94" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <rect x="195" y="50" width="42" height="5" rx="2.5" fill="#4a4a6a"/>
+          <rect x="200" y="54" width="3" height="10" fill="#3a3a5a"/>
+          <rect x="230" y="54" width="3" height="10" fill="#3a3a5a"/>
+          <ellipse cx="241" cy="102" rx="10" ry="5" fill="#ffe080" opacity="0.9"/>
+          <ellipse cx="241" cy="102" rx="7" ry="3.5" fill="#fff9c4"/>
+          <ellipse cx="241" cy="102" rx="14" ry="7" fill="url(#headlightGlow)" opacity="0.5"/>
+          <path d="M58 108 Q56 110 58 112 L75 112 L75 108 Z" fill="#cc2222" opacity="0.85"/>
+          <circle cx="220" cy="131" r="20" fill="url(#wheelGrad)"/>
+          <circle cx="220" cy="131" r="15" fill="#1a1a2a"/>
+          <circle cx="220" cy="131" r="14" fill="none" stroke="url(#rimGrad)" stroke-width="2.5"/>
+          <line x1="220" y1="117" x2="220" y2="145" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="206" y1="131" x2="234" y2="131" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="210" y1="121" x2="230" y2="141" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="210" y1="141" x2="230" y2="121" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <circle cx="220" cy="131" r="4" fill="#7a4db8"/>
+          <circle cx="88" cy="131" r="20" fill="url(#wheelGrad)"/>
+          <circle cx="88" cy="131" r="15" fill="#1a1a2a"/>
+          <circle cx="88" cy="131" r="14" fill="none" stroke="url(#rimGrad)" stroke-width="2.5"/>
+          <line x1="88" y1="117" x2="88" y2="145" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="74" y1="131" x2="102" y2="131" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="78" y1="121" x2="98" y2="141" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <line x1="78" y1="141" x2="98" y2="121" stroke="url(#rimGrad)" stroke-width="1.5"/>
+          <circle cx="88" cy="131" r="4" fill="#7a4db8"/>
+          <path d="M62 128 Q65 108 88 108 Q111 108 114 128" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2"/>
+          <path d="M194 128 Q197 108 220 108 Q243 108 246 128" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.2"/>
+          <path d="M140 53 Q160 50 178 53" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div>
+        <div class="daily-label">Daily Rate</div>
+        <div class="daily-rate-row">
+          <div class="rate-amount">Rs. 45,000<span style="font-size:13px; font-weight:400; color:rgba(255,255,255,0.55)">/day</span></div>
+          <div class="fuel-badge">Premium Fuel Inc.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-col">
+      <div class="section-title">Reservation Details</div>
+
+      <div class="date-row">
+        <div class="field-group">
+          <div class="field-label">Start Date</div>
+          <div class="field-input">
+            <input id="startDate" type="date" aria-label="Start Date">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">End Date</div>
+          <div class="field-input">
+            <input id="endDate" type="date" aria-label="End Date">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-row">
+        <div class="field-group">
+          <div class="field-label">Pickup Time</div>
+          <div class="field-input">
+            <input id="pickupTime" type="time" aria-label="Pickup Time">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Drop-off Time</div>
+          <div class="field-input">
+            <input id="dropoffTime" type="time" aria-label="Drop-off Time">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-rows">
+        <div class="pricing-row">
+          <span class="pricing-label">Base Price (2 Days)</span>
+          <span class="pricing-value">Rs. 90,000</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-label">Service Fee</span>
+          <span class="pricing-value">Rs. 1,200</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-label">Insurance Premium</span>
+          <span class="pricing-value">Rs. 3,500</span>
+        </div>
+      </div>
+
+      <div class="total-row">
+        <span class="total-label">Total</span>
+        <span class="total-value">Rs. 94,700</span>
+      </div>
+
+      <button class="confirm-btn">
+        Confirm Booking <span class="arrow">→</span>
+      </button>
+
+      <div class="cancel-note">Free cancellation up to 24 hours before pickup</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API_BASE = window.location.port ? '/api' : 'http://localhost:5001/api';
+  let selectedVehicle = JSON.parse(localStorage.getItem('selectedVehicle') || 'null');
+  const params = new URLSearchParams(window.location.search);
+
+  function parsePrice(value) {
+    return Number(String(value || '').replace(/[^0-9.]/g, '')) || 0;
+  }
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatDisplayDate(dateString) {
+    const [year, month, day] = String(dateString || '').split('-');
+    return year && month && day ? `${month}/${day}/${year}` : dateString;
+  }
+
+  function defaultBookingDates() {
+    const rentalSearch = JSON.parse(localStorage.getItem('rentalSearch') || 'null');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const requestedDate = rentalSearch?.date ? new Date(`${rentalSearch.date}T00:00:00`) : null;
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    const start = requestedDate && !Number.isNaN(requestedDate.getTime()) && requestedDate >= today
+      ? requestedDate
+      : tomorrow;
+    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+
+    return {
+      startDate: formatDate(start),
+      endDate: formatDate(end),
+      days: Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24))),
+    };
+  }
+
+  function getBookingDates() {
+    const startInput = document.getElementById('startDate');
+    const endInput = document.getElementById('endDate');
+    const fallback = defaultBookingDates();
+    const startDate = startInput?.value || fallback.startDate;
+    const endDate = endInput?.value || fallback.endDate;
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+
+    return {
+      startDate,
+      endDate,
+      days: Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24))),
+    };
+  }
+
+  function getTimeDetails() {
+    return {
+      pickup_time: document.getElementById('pickupTime')?.value || '10:00',
+      dropoff_time: document.getElementById('dropoffTime')?.value || '20:00',
+    };
+  }
+
+  function getBookingPrice(pricePerDay = 0) {
+    const { days } = getBookingDates();
+    const base = Number(pricePerDay || selectedVehicle?.price || parsePrice(selectedVehicle?.priceText) || 0) * days;
+    const serviceFee = base > 0 ? Math.max(250, Math.round(base * 0.03)) : 0;
+    const insurance = base > 0 ? Math.max(500, Math.round(base * 0.05)) : 0;
+
+    return {
+      days,
+      base,
+      serviceFee,
+      insurance,
+      total: base + serviceFee + insurance,
+    };
+  }
+
+  function normalizeBookingVehicle(car) {
+    return {
+      id: car.id,
+      name: car.name,
+      category: [car.brand, car.model].filter(Boolean).join(' / ') || 'Vehicle',
+      year: car.year,
+      price: car.price_per_day,
+      image_url: car.image,
+      availability: car.availability,
+      specs: [car.brand, car.model].filter(Boolean),
+    };
+  }
+
+  async function loadBookingVehicle() {
+    const carId = params.get('car_id');
+    if (!carId || (selectedVehicle && String(selectedVehicle.id) === String(carId))) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/cars/${encodeURIComponent(carId)}`);
+      const data = await res.json();
+      if (res.ok && data.success && data.car) {
+        selectedVehicle = normalizeBookingVehicle(data.car);
+        localStorage.setItem('selectedVehicle', JSON.stringify(selectedVehicle));
+      }
+    } catch (error) {
+    }
+  }
+
+  function setBookingVehicle() {
+    if (!selectedVehicle) return;
+
+    const title = document.querySelector('.car-title');
+    const rate = document.querySelector('.rate-amount');
+    const imageWrap = document.querySelector('.car-image-wrap');
+    const specs = document.querySelectorAll('.spec-item');
+    const vehicleName = selectedVehicle.name || 'Selected Vehicle';
+    const vehicleMeta = selectedVehicle.meta || selectedVehicle.category || selectedVehicle.specs?.join(' / ') || '';
+    const price = selectedVehicle.price || parsePrice(selectedVehicle.priceText);
+
+    title.innerHTML = vehicleName.replace(/\s+/, '<br>');
+    if (specs[0]) specs[0].lastChild.textContent = vehicleMeta || 'Ready';
+    if (specs[1]) specs[1].lastChild.textContent = selectedVehicle.year || 'Available';
+    if (price) rate.innerHTML = `Rs. ${Number(price).toLocaleString('en-IN')}<span style="font-size:13px; font-weight:400; color:rgba(255,255,255,0.55)">/day</span>`;
+
+    if (selectedVehicle.image || selectedVehicle.image_url) {
+      imageWrap.innerHTML = `<img src="${selectedVehicle.image || selectedVehicle.image_url}" alt="${vehicleName}">`;
+    }
+
+    updateReservationSummary(price);
+  }
+
+  function updateReservationSummary(pricePerDay = 0) {
+    const { days } = getBookingDates();
+
+    const { base, serviceFee, insurance, total } = getBookingPrice(pricePerDay);
+    const labels = document.querySelectorAll('.pricing-label');
+    const values = document.querySelectorAll('.pricing-value');
+    if (labels[0]) labels[0].textContent = `Base Price (${days} ${days === 1 ? 'Day' : 'Days'})`;
+    if (values[0]) values[0].textContent = `Rs. ${base.toLocaleString('en-IN')}`;
+    if (values[1]) values[1].textContent = `Rs. ${serviceFee.toLocaleString('en-IN')}`;
+    if (values[2]) values[2].textContent = `Rs. ${insurance.toLocaleString('en-IN')}`;
+    const totalValue = document.querySelector('.total-value');
+    if (totalValue) totalValue.textContent = `Rs. ${total.toLocaleString('en-IN')}`;
+  }
+
+  function initializeReservationFields() {
+    const { startDate, endDate } = defaultBookingDates();
+    const startInput = document.getElementById('startDate');
+    const endInput = document.getElementById('endDate');
+    const pickupInput = document.getElementById('pickupTime');
+    const dropoffInput = document.getElementById('dropoffTime');
+
+    if (startInput) {
+      startInput.min = formatDate(new Date());
+      startInput.value = startDate;
+    }
+    if (endInput) {
+      endInput.min = startDate;
+      endInput.value = endDate;
+    }
+    if (pickupInput) pickupInput.value = '10:00';
+    if (dropoffInput) dropoffInput.value = '20:00';
+
+    startInput?.addEventListener('change', () => {
+      const start = startInput.value;
+      if (!start) return;
+      if (endInput) {
+        endInput.min = start;
+        if (!endInput.value || endInput.value <= start) {
+          const nextDay = new Date(`${start}T00:00:00`);
+          nextDay.setDate(nextDay.getDate() + 1);
+          endInput.value = formatDate(nextDay);
+        }
+      }
+      updateReservationSummary(selectedVehicle?.price || parsePrice(selectedVehicle?.priceText));
+    });
+
+    endInput?.addEventListener('change', () => {
+      updateReservationSummary(selectedVehicle?.price || parsePrice(selectedVehicle?.priceText));
+    });
+  }
+
+  async function confirmBooking() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const carId = params.get('car_id') || selectedVehicle?.id;
+    const numericCarId = Number(carId);
+    const { startDate, endDate } = getBookingDates();
+    const timeDetails = getTimeDetails();
+    const price = selectedVehicle?.price || parsePrice(selectedVehicle?.priceText) || 0;
+    const { total } = getBookingPrice(price);
+
+    if (!token || user?.role !== 'user') {
+      localStorage.setItem('postLoginRedirect', window.location.pathname + window.location.search);
+      alert('Please log in with a customer account before booking.');
+      window.location.href = 'login.html?role=user';
+      return;
+    }
+
+    if (!Number.isInteger(numericCarId) || numericCarId < 1) {
+      alert('This vehicle is not connected to the live rental system. Please choose a listed vehicle again.');
+      window.location.href = 'vehicleListing.html';
+      return;
+    }
+
+    if (!startDate || !endDate || endDate <= startDate) {
+      alert('Please select a valid start date and end date.');
+      return;
+    }
+
+    if (!timeDetails.pickup_time || !timeDetails.dropoff_time) {
+      alert('Please select pickup and drop-off time.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/bookings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          car_id: numericCarId,
+          start_date: startDate,
+          end_date: endDate,
+          pickup_time: timeDetails.pickup_time,
+          dropoff_time: timeDetails.dropoff_time,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        alert(data.message || 'Could not create booking.');
+        return;
+      }
+
+      localStorage.setItem('currentBooking', JSON.stringify({ ...data.booking, ...timeDetails }));
+      window.location.href = `payment.html?booking_id=${data.booking.id}`;
+    } catch (error) {
+      alert('Cannot connect to backend. Make sure the server is running on port 5001.');
+    }
+  }
+
+  document.querySelector('.confirm-btn').addEventListener('click', confirmBooking);
+  initializeReservationFields();
+  loadBookingVehicle().finally(setBookingVehicle);
+</script>
+
+<script src="/app.js"></script>
+</body>
+</html>

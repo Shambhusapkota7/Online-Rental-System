@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vroom Nepal - Premium Rentals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/landing/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="/" aria-label="Vroom Nepal home">
+      <img src="/landing/logo.png" alt="Vroom Nepal">
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="/vehicleListing.html">Collection</a></li>
+        <li><a href="/vehicleListing.html?category=all">Rentals</a></li>
+        <li><a href="/dashboard_customer.html">My Bookings</a></li>
+        <li><a href="/iddentity_hub.html">Account</a></li>
+      </ul>
+    </nav>
+
+    <a class="nav-btn" href="/vehicleListing.html" id="landingBookNow">Book Now</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <p class="eyebrow">VROOM NEPAL</p>
+        <h1>Precision in every kilometer.</h1>
+        <p class="hero-copy">Premium cars, bikes, buses, and heavy vehicles ready for trips, work, and special days.</p>
+
+        <form class="search-box" id="landingSearch">
+          <label class="search-item">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <input type="text" id="pickupLocation" placeholder="Pickup location" autocomplete="address-level2">
+          </label>
+
+          <label class="search-item">
+            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+            <input type="date" id="pickupDate">
+          </label>
+
+          <button type="submit">Find Your Ride</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" id="collection">
+      <div class="section-top">
+        <div>
+          <h2>Browse by Need</h2>
+          <p>Choose the right vehicle type and jump straight into the rental flow.</p>
+        </div>
+        <a class="text-link" href="/vehicleListing.html">View all</a>
+      </div>
+
+      <div class="vibe-grid">
+        <a class="vibe-card" href="/vehicleListing.html?category=car">
+          <img src="/image/car.img.jpg" alt="Premium car">
+          <span class="card-overlay">
+            <strong>Cars</strong>
+            <small>Daily and luxury rentals</small>
+          </span>
+        </a>
+
+        <a class="vibe-card" href="/vehicleListing.html?category=bike">
+          <img src="/image/bike.img.jpg" alt="Rental bike">
+          <span class="card-overlay">
+            <strong>Bikes</strong>
+            <small>Fast city movement</small>
+          </span>
+        </a>
+
+        <a class="vibe-card" href="/vehicleListing.html?category=bus">
+          <img src="/image/bus.img.jpg" alt="Rental bus">
+          <span class="card-overlay">
+            <strong>Buses</strong>
+            <small>Groups and tours</small>
+          </span>
+        </a>
+
+        <a class="vibe-card" href="/vehicleListing.html?category=tractor">
+          <img src="/image/tractor.img.jpg" alt="Rental tractor">
+          <span class="card-overlay">
+            <strong>Work Fleet</strong>
+            <small>Tractors, cranes, and trucks</small>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-top">
+        <div>
+          <h2>Available Now</h2>
+          <p id="fleetStatus">Loading vehicles from your backend...</p>
+        </div>
+
+        <div class="slider-buttons" aria-label="Vehicle slider controls">
+          <button type="button" id="prev" aria-label="Previous vehicles">
+            <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" id="next" aria-label="Next vehicles">
+            <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="cars-container" id="carsContainer" aria-live="polite"></div>
+    </section>
+
+    <section class="stats" aria-label="Vroom Nepal highlights">
+      <div class="stat-box">
+        <strong>12k+</strong>
+        <span>Customers</span>
+      </div>
+      <div class="stat-box">
+        <strong>24/7</strong>
+        <span>Support</span>
+      </div>
+      <div class="stat-box">
+        <strong>4.9/5</strong>
+        <span>Rating</span>
+      </div>
+      <div class="stat-box">
+        <strong>Fast</strong>
+        <span>Online Booking</span>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Ready to Drive?</h2>
+      <p>Search the fleet, reserve your vehicle, and continue to payment through the connected backend flow.</p>
+      <div class="cta-buttons">
+        <a class="primary-btn" href="/vehicleListing.html">Explore Vehicles</a>
+        <a class="secondary-btn" href="/login.html" id="landingLoginCta">Login / Signup</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <h3>VROOM NEPAL</h3>
+      <p>Luxury and utility vehicles for modern journeys.</p>
+      <p>&copy; 2026 Vroom Nepal. All rights reserved.</p>
+    </div>
+
+    <div class="footer-links">
+      <a href="/vehicleListing.html">Fleet Listing</a>
+      <a href="/payment.html">Payments</a>
+      <a href="/dashboard_customer.html">My Bookings</a>
+      <a href="/iddentity_hub.html">Profile</a>
+    </div>
+  </footer>
+
+  <script src="/landing/script.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
